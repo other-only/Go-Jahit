@@ -1,5 +1,10 @@
 @extends('client.master')
 
+
+@section('title', 'Status Pesanan')
+
+@section('page-title', 'Status Pesanan')
+
 @section('content')
     <!-- Order Status Page -->
     <div id="order-status" class="row">

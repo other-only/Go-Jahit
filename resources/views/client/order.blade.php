@@ -1,5 +1,10 @@
 @extends('client.master')
 
+
+@section('title', 'Pemesanan')
+
+@section('page-title', 'Pemesanan')
+
 @section('content')
     <!-- Step 2: Purchase Form -->
     <div id="purchase-form" class="row mb-4">

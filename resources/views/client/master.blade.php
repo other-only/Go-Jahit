@@ -245,6 +245,12 @@
                             <i class="bi bi-house-door"></i> Beranda
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('client.track.order') ? 'active' : '' }}"
+                            href="{{ route('client.track.order') }}">
+                            <i class="bi bi-truck"></i> Lihat Status Order
+                        </a>
+                    </li>
                 </ul>
 
                 <!-- Right Side Nav -->

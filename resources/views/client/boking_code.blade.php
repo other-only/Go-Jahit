@@ -1,5 +1,9 @@
 @extends('client.master')
 
+@section('title', 'Kode Booking')
+
+@section('page-title', 'Kode Booking')
+
 @section('content')
     <!-- Booking Code Page -->
     <div id="booking-confirmation" class="row">

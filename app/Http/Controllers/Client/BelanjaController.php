@@ -60,4 +60,15 @@ class BelanjaController extends Controller
         $order = Order::where('kode_order', $order)->first();
         return view('client.order_status', compact('order'));
     }
+
+    public function trackOrder(Request $request)
+    {
+        return view('client.cari_kode_boking');
+    }
+
+    public function trackOrderPost(Request $request)
+    {
+        $order = Order::where('kode_order', $request->kode_order)->first();
+        return view('client.order_status', compact('order'));
+    }
 }

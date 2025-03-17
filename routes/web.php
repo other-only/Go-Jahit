@@ -22,6 +22,8 @@ Route::group(['prefix' => 'client'], function () {
     Route::post('order/{toko}', [BelanjaController::class, 'orderPost'])->name('client.order.post');
     Route::get('order/{order}/success', [BelanjaController::class, 'orderSuccess'])->name('client.order.success');
     Route::get('order/{order}/status', [BelanjaController::class, 'orderStatus'])->name('client.order.status');
+    Route::get('track/order', [BelanjaController::class, 'trackOrder'])->name('client.track.order');
+    Route::post('track/order', [BelanjaController::class, 'trackOrderPost'])->name('client.track.order.post');
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {

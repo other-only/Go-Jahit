@@ -1,5 +1,8 @@
 @extends('client.master')
 
+@section('title', 'Pilih Toko')
+
+@section('page-title', 'Pilih Toko')
 
 @section('content')
     <div id="store-selection" class="row mb-4">
