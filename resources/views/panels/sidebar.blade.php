@@ -51,6 +51,14 @@
             </ul>
         </li>
 
+        <li class="menu-item {{ request()->is('admin/order*') ? 'active' : '' }}">
+            <a href="{{ route('admin.order.index') }}" class="menu-link ">
+                <i class="menu-icon tf-icons bx bx-cart"></i>
+                <div class="text-truncate" data-i18n="Pemesanan">Pemesanan</div>
+                {{--  <span class="badge rounded-pill bg-danger ms-auto">5</span>  --}}
+            </a>
+        </li>
+
 
     </ul>
 </aside>

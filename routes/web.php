@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DetailController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\Admin\TokoController;
 use App\Http\Controllers\Client\BelanjaController;
@@ -40,5 +41,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
         Route::group(['prefix' => 'detail'], function () {
             Route::get('', [DetailController::class, 'index'])->name('admin.detail.index');
         });
+    });
+    Route::group(['prefix' => 'order'], function () {
+        Route::get('', [OrderController::class, 'index'])->name('admin.order.index');
     });
 });
