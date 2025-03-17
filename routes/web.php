@@ -1,17 +1,42 @@
 <?php
 
-use App\Http\Controllers\Admin\Produk\ProdukController;
+use App\Http\Controllers\Admin\DetailController;
+use App\Http\Controllers\Admin\ProdukController;
+use App\Http\Controllers\Admin\TokoController;
+use App\Http\Controllers\Client\BelanjaController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('index');
+    return redirect()->route('client.belanja');
 });
 
-Route::group(['prefix' => 'admin'], function () {
+Route::get('login', [LoginController::class, 'login'])->middleware('guest')->name('login');
+Route::post('login', [LoginController::class, 'postLogin'])->middleware('guest')->name('login.post');
+
+Route::get('logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
+
+Route::group(['prefix' => 'client'], function () {
+    Route::get('belanja', [BelanjaController::class, 'index'])->name('client.belanja');
+    Route::get('order/{toko}', [BelanjaController::class, 'order'])->name('client.order');
+    Route::post('order/{toko}', [BelanjaController::class, 'orderPost'])->name('client.order.post');
+    Route::get('order/{order}/success', [BelanjaController::class, 'orderSuccess'])->name('client.order.success');
+    Route::get('order/{order}/status', [BelanjaController::class, 'orderStatus'])->name('client.order.status');
+});
+
+Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('dashboard', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
-    Route::group(['prefix' => 'produk'], function () {
-        Route::get('', [ProdukController::class, 'index'])->name('admin.produk.index');
+    Route::group(['prefix' => 'seting'], function () {
+        Route::group(['prefix' => 'toko'], function () {
+            Route::get('', [TokoController::class, 'index'])->name('admin.toko.index');
+        });
+        Route::group(['prefix' => 'produk'], function () {
+            Route::get('', [ProdukController::class, 'index'])->name('admin.produk.index');
+        });
+        Route::group(['prefix' => 'detail'], function () {
+            Route::get('', [DetailController::class, 'index'])->name('admin.detail.index');
+        });
     });
 });

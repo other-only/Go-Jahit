@@ -21,6 +21,9 @@ return new class extends Migration
             $table->string('latitude');
             $table->string('longitude');
             $table->string('logo');
+            $table->string('bank');
+            $table->string('no_rekening');
+            $table->string('atas_nama');
 
             $table->timestamps();
 

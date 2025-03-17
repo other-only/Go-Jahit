@@ -27,13 +27,13 @@ class UserSeeder extends Seeder
             ],
         ];
 
-        foreach ($data as $user) {
-            $user = User::create([
-                'name' => $user['name'],
-                'email' => $user['email'],
-                'password' => $user['password'],
+        foreach ($data as $userData) {
+            $user = User::updateOrCreate(['email' => $userData['email']], [
+                'name' => $userData['name'],
+                'email' => $userData['email'],
+                'password' => $userData['password'],
             ]);
-            $user->syncRoles($user->role);
+            $user->syncRoles($userData['role']);
         }
     }
 }

@@ -12,14 +12,17 @@ class TokoSeeder extends Seeder
      */
     public function run(): void
     {
-        Toko::create([
+        Toko::updateOrCreate(['id' => 1], [
             'penjahit_id' => 2,
             'nama_toko' => 'Toko 1',
             'deskripsi' => 'Deskripsi Toko 1',
             'alamat' => 'Alamat Toko 1',
             'latitude' => 'Latitude Toko 1',
             'longitude' => 'Longitude Toko 1',
-            'logo' => asset('assets/icons/toko.jpg'),
+            'logo' => 'toko.jpg',
+            'bank' => 'BCA',
+            'no_rekening' => '1234567890',
+            'atas_nama' => 'John Doe',
         ]);
     }
 }

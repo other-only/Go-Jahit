@@ -12,22 +12,22 @@ class ProductDetailSeeder extends Seeder
      */
     public function run(): void
     {
-        ProductDetail::create([
+        ProductDetail::updateOrCreate(['id' => 1], [
             'toko_id' => 1,
             'nama_detail' => 'Polyester',
             'deskripsi' => 'Berbahan Polyester',
-            'harga' => 'Rp. 100.000',
+            'harga' => 100000,
             'diskon' => null,
-            'foto' => asset('assets/icons/polyester.jpg'),
+            'foto' => 'polyester.jpg',
         ]);
 
-        ProductDetail::create([
+        ProductDetail::updateOrCreate(['id' => 2], [
             'toko_id' => 1,
             'nama_detail' => 'Sutra',
             'deskripsi' => 'Berbahan Sutra',
-            'harga' => 'Rp. 200.000',
+            'harga' => 200000,
             'diskon' => null,
-            'foto' => asset('assets/icons/sutra.jpg'),
+            'foto' => 'sutra.jpg',
         ]);
     }
 }
