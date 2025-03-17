@@ -2,11 +2,10 @@
 
 
 @section('content')
-    <!-- Step 1: Store Selection -->
     <div id="store-selection" class="row mb-4">
         @foreach ($tokos as $toko)
             <a href="{{ route('client.order', ['toko' => $toko->id]) }}" class="col-md-4 mb-3">
-                <div class="card store-card h-100">
+                <div class="card store-card">
                     <img src="{{ $toko->getLogo() }}" class="card-img-top" alt="{{ $toko->nama_toko }}">
                     <div class="card-body">
                         <h5 class="card-title">{{ $toko->nama_toko }}</h5>
