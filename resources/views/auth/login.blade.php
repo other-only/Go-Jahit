@@ -14,7 +14,7 @@
                         <!-- Logo -->
                         <div class="app-brand justify-content-center">
                             <a href="{{ route('admin.dashboard') }}" class="app-brand-link gap-2">
-                                <img src="{{ asset('assets/icons/toko.jpg') }}" width="50" class="app-brand-logo demo" />
+                                <img src="{{ asset('assets/icons/logo.png') }}" width="50" class="app-brand-logo demo" />
                                 <span class="app-brand-text demo text-heading fw-bold">{{ config('app.name') }}</span>
                             </a>
                         </div>

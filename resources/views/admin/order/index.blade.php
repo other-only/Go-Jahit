@@ -15,6 +15,9 @@
                             <th>Banyak Pemesanan</th>
                             <th>Total Harga</th>
                             <th>Metode Bayar</th>
+                            <th>Nama Pemesan</th>
+                            <th>Alamat Pemesan</th>
+                            <th>No Pemesan</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -29,6 +32,9 @@
                                 <td>
                                     {{ $order->bayar == 'transfer' ? 'Transfer Bank' : 'COD (Cash On Delivery)' }}
                                 </td>
+                                <td>{{ $order->nama_penerima }}</td>
+                                <td>{{ $order->alamat_penerima }}</td>
+                                <td>{{ $order->no_hp_penerima }}</td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
                                         <a href="#" class="btn btn-sm btn-primary">Lihat</a>

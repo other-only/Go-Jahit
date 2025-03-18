@@ -9,6 +9,7 @@
                 <table class="table">
                     <thead>
                         <tr>
+                            <th>Foto Produk</th>
                             <th>Nama Produk</th>
                             <th>Deskribsi</th>
                             <th>Harga</th>
@@ -19,6 +20,10 @@
                     <tbody class="table-border-bottom-0">
                         @foreach ($produks as $produk)
                             <tr>
+                                <td>
+                                    <img src="{{ $produk->getFoto() }}"
+                                        alt="{{ Str::slug($produk->nama_produk) . '-' . $produk->id }}" width="100">
+                                </td>
                                 <td>{{ $produk->nama_produk }}</td>
                                 <td>{{ $produk->deskripsi }}</td>
                                 <td>{{ formatRupiah($produk->harga) }}</td>

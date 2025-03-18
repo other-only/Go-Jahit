@@ -1,6 +1,6 @@
 @extends('panels.master')
 
-@section('title', 'Produk')
+@section('title', 'Detail Toko')
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
@@ -9,7 +9,8 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Nama Produk</th>
+                            <th>Foto Detail</th>
+                            <th>Nama Detail</th>
                             <th>Deskribsi</th>
                             <th>Harga</th>
                             <th>Aksi</th>
@@ -18,6 +19,10 @@
                     <tbody class="table-border-bottom-0">
                         @foreach ($details as $detail)
                             <tr>
+                                <td>
+                                    <img src="{{ $detail->getFoto() }}"
+                                        alt="{{ Str::slug($detail->nama_detail) . '-' . $detail->id }}" width="100">
+                                </td>
                                 <td>{{ $detail->nama_detail }}</td>
                                 <td>{{ $detail->deskripsi }}</td>
                                 <td>{{ formatRupiah($detail->harga) }}</td>

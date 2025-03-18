@@ -3,7 +3,7 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
         <a href="{{ route('admin.dashboard') }}" class="app-brand-link">
-            <img src="{{ asset('assets/icons/toko.jpg') }}" width="50" class="app-brand-logo demo" />
+            <img src="{{ asset('assets/icons/logo.png') }}" width="50" class="app-brand-logo demo" />
             <span class="app-brand-text demo menu-text fw-bold ms-2">{{ config('app.name') }}</span>
         </a>
 
