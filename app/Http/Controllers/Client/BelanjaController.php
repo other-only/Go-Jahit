@@ -12,7 +12,7 @@ class BelanjaController extends Controller
 {
     public function index(Request $request)
     {
-        $tokos = Toko::all();
+        $tokos = Toko::has('produks')->has('details')->get();
         return view('client.list_toko', compact('tokos'));
     }
 
