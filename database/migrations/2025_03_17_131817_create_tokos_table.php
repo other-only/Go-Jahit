@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('nama_toko');
             $table->text('deskripsi');
             $table->text('alamat');
-            $table->string('latitude');
-            $table->string('longitude');
+            $table->string('latitude')->nullable();
+            $table->string('longitude')->nullable();
             $table->string('logo');
             $table->string('bank');
             $table->string('no_rekening');

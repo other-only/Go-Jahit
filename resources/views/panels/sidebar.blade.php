@@ -59,6 +59,16 @@
             </a>
         </li>
 
+        @if (auth()->user()->hasRole('admin'))
+            <li class="menu-item {{ request()->is('admin/penjahit*') ? 'active' : '' }}">
+                <a href="{{ route('admin.penjahit.index') }}" class="menu-link ">
+                    <i class="menu-icon tf-icons bx bx-user"></i>
+                    <div class="text-truncate" data-i18n="Tambah Penjahit">Tambah Penjahit</div>
+                    {{--  <span class="badge rounded-pill bg-danger ms-auto">5</span>  --}}
+                </a>
+            </li>
+        @endif
+
 
     </ul>
 </aside>

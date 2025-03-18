@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DetailController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\PenjahitController;
 use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\Admin\TokoController;
 use App\Http\Controllers\Client\BelanjaController;
@@ -58,5 +59,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin|penjahit
     });
     Route::group(['prefix' => 'order'], function () {
         Route::get('', [OrderController::class, 'index'])->name('admin.order.index');
+    });
+    Route::group(['prefix' => 'penjahit', 'middleware' => 'role:admin'], function () {
+        Route::get('', [PenjahitController::class, 'index'])->name('admin.penjahit.index');
+        Route::get('add', [PenjahitController::class, 'create'])->name('admin.penjahit.create');
+        Route::post('store', [PenjahitController::class, 'store'])->name('admin.penjahit.store');
     });
 });
