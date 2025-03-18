@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('bank');
             $table->string('no_rekening');
             $table->string('atas_nama');
+            $table->string('no_wa');
 
             $table->timestamps();
 

@@ -23,6 +23,7 @@ class TokoSeeder extends Seeder
             'bank' => 'BCA',
             'no_rekening' => '1234567890',
             'atas_nama' => 'John Doe',
+            'no_wa' => '08123456789',
         ]);
     }
 }
