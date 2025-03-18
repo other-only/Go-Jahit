@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('toko_id');
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('product_detail_id');
+            $table->unsignedBigInteger('pelanggan_id');
 
             $table->string('total_harga');
             $table->enum('bayar', ['cod', 'transfer']);
@@ -34,6 +35,7 @@ return new class extends Migration
             $table->foreign('toko_id')->references('id')->on('tokos')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->foreign('product_detail_id')->references('id')->on('product_details')->onDelete('cascade');
+            $table->foreign('pelanggan_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

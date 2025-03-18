@@ -25,6 +25,16 @@ class UserSeeder extends Seeder
                 'password' => bcrypt('password'),
                 'role' => 'penjahit',
             ],
+            [
+                'name' => 'Pelanggan',
+                'email' => 'pelanggan@email.com',
+                'password' => bcrypt('password'),
+                'role' => 'pelanggan',
+                'alamat' => 'Jl. Kebon Jeruk',
+                'no_hp' => '08123456789',
+                'latitude' => '-6.200000',
+                'longitude' => '106.816667',
+            ],
         ];
 
         foreach ($data as $userData) {
@@ -32,6 +42,10 @@ class UserSeeder extends Seeder
                 'name' => $userData['name'],
                 'email' => $userData['email'],
                 'password' => $userData['password'],
+                'alamat' => $userData['alamat'] ?? null,
+                'no_hp' => $userData['no_hp'] ?? null,
+                'latitude' => $userData['latitude'] ?? null,
+                'longitude' => $userData['longitude'] ?? null,
             ]);
             $user->syncRoles($userData['role']);
         }

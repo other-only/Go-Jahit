@@ -282,11 +282,19 @@
                                 </div>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
-                                        <i class="bi bi-speedometer2"></i> Dashboard Admin
-                                    </a>
-                                </li>
+                                @if (auth()->user()->hasRole('admin', 'penjahit'))
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
+                                            <i class="bi bi-speedometer2"></i> Dashboard Admin
+                                        </a>
+                                    </li>
+                                @else
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('client.history.order') }}">
+                                            <i class="bi bi-card-list"></i> History Order
+                                        </a>
+                                    </li>
+                                @endif
 
                             </ul>
                         </li>

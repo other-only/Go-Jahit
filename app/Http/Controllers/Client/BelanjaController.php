@@ -39,6 +39,7 @@ class BelanjaController extends Controller
                 'nama_penerima' => $request->name,
                 'alamat_penerima' => $request->address,
                 'no_hp_penerima' => $request->phone,
+                'pelanggan_id' => auth()->user()->id,
                 'bukti_pembayaran' => $request->paymentMethod == 'transfer' ? $this->uploadImage($request->file('bukti_transfer'), 'bukti_pembayaran') : null,
             ]);
             DB::commit();
@@ -70,5 +71,26 @@ class BelanjaController extends Controller
     {
         $order = Order::where('kode_order', $request->kode_order)->first();
         return view('client.order_status', compact('order'));
+    }
+
+    public function historyOrder(Request $request)
+    {
+        $orders = Order::where('pelanggan_id', auth()->user()->id)->orderBy('created_at', 'desc')->get();
+        return view('client.order_history', compact('orders'));
+    }
+
+    public function cancelOrder(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $order = Order::where('kode_order', $request->kode_order)->first();
+            $order->status = 'batal';
+            $order->save();
+            DB::commit();
+            return back()->with('success', 'Order Berhasil Dibatalkan');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
+        }
     }
 }

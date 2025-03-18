@@ -18,6 +18,10 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (auth()->attempt($credentials)) {
+            $user = auth()->user();
+            if ($user->hasRole('pelanggan')) {
+                return redirect()->route('client.belanja');
+            }
             return redirect()->route('admin.dashboard');
         }
         return back()->withInput();

@@ -185,17 +185,20 @@
 
                                 <div class="mb-3">
                                     <label for="name" class="form-label">Nama Penerima</label>
-                                    <input type="text" class="form-control" id="name" name="name" required>
+                                    <input type="text" class="form-control" id="name" name="name"
+                                        value="{{ auth()->user()->name }}" required>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="address" class="form-label">Alamat Pengiriman</label>
-                                    <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                                    <textarea class="form-control" id="address" name="address" rows="3" required>{{ auth()->user()->alamat }}
+                                    </textarea>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="phone" class="form-label">Nomor Telepon</label>
-                                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                                    <input type="tel" class="form-control" id="phone" name="phone"
+                                        value="{{ auth()->user()->no_hp }}" required>
                                 </div>
 
                                 <div class="alert alert-danger" id="form-errors" style="display: none;">

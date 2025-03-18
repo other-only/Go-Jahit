@@ -17,7 +17,7 @@ Route::post('login', [LoginController::class, 'postLogin'])->middleware('guest')
 
 Route::get('logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
-Route::group(['prefix' => 'client'], function () {
+Route::group(['prefix' => 'client', 'middleware' => 'auth'], function () {
     Route::get('belanja', [BelanjaController::class, 'index'])->name('client.belanja');
     Route::get('order/{toko}', [BelanjaController::class, 'order'])->name('client.order');
     Route::post('order/{toko}', [BelanjaController::class, 'orderPost'])->name('client.order.post');
@@ -25,6 +25,8 @@ Route::group(['prefix' => 'client'], function () {
     Route::get('order/{order}/status', [BelanjaController::class, 'orderStatus'])->name('client.order.status');
     Route::get('track/order', [BelanjaController::class, 'trackOrder'])->name('client.track.order');
     Route::post('track/order', [BelanjaController::class, 'trackOrderPost'])->name('client.track.order.post');
+    Route::get('orders', [BelanjaController::class, 'historyOrder'])->name('client.history.order');
+    Route::post('cancel/order', [BelanjaController::class, 'cancelOrder'])->name('client.cancel.order');
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
