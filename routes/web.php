@@ -43,6 +43,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin|penjahit
         });
         Route::group(['prefix' => 'produk'], function () {
             Route::get('', [ProdukController::class, 'index'])->name('admin.produk.index');
+            Route::get('add', [ProdukController::class, 'create'])->middleware('role:penjahit')->name('admin.produk.create');
+            Route::post('store', [ProdukController::class, 'store'])->middleware('role:penjahit')->name('admin.produk.store');
+            Route::get('edit/{produk}', [ProdukController::class, 'edit'])->name('admin.produk.edit');
+            Route::post('update/{produk}', [ProdukController::class, 'update'])->name('admin.produk.update');
         });
         Route::group(['prefix' => 'detail'], function () {
             Route::get('', [DetailController::class, 'index'])->name('admin.detail.index');
