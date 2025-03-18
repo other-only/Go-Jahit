@@ -50,6 +50,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin|penjahit
         });
         Route::group(['prefix' => 'detail'], function () {
             Route::get('', [DetailController::class, 'index'])->name('admin.detail.index');
+            Route::get('add', [DetailController::class, 'create'])->name('admin.detail.create');
+            Route::post('store', [DetailController::class, 'store'])->name('admin.detail.store');
+            Route::get('edit/{detail}', [DetailController::class, 'edit'])->name('admin.detail.edit');
+            Route::post('update/{detail}', [DetailController::class, 'update'])->name('admin.detail.update');
         });
     });
     Route::group(['prefix' => 'order'], function () {
