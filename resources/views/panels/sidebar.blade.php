@@ -33,17 +33,17 @@
                 {{--  <span class="badge rounded-pill bg-danger ms-auto">5</span>  --}}
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {{ request()->is('admin/seting/toko') ? 'active' : '' }}">
+                <li class="menu-item {{ request()->is('admin/seting/toko*') ? 'active' : '' }}">
                     <a href="{{ route('admin.toko.index') }}" class="menu-link">
                         <div class="text-truncate" data-i18n="Toko">Toko</div>
                     </a>
                 </li>
-                <li class="menu-item {{ request()->is('admin/seting/produk') ? 'active' : '' }}">
+                <li class="menu-item {{ request()->is('admin/seting/produk*') ? 'active' : '' }}">
                     <a href="{{ route('admin.produk.index') }}" class="menu-link">
                         <div class="text-truncate" data-i18n="Produk">Produk</div>
                     </a>
                 </li>
-                <li class="menu-item {{ request()->is('admin/seting/detail') ? 'active' : '' }}">
+                <li class="menu-item {{ request()->is('admin/seting/detail*') ? 'active' : '' }}">
                     <a href="{{ route('admin.detail.index') }}" class="menu-link">
                         <div class="text-truncate" data-i18n="Detail">Detail</div>
                     </a>

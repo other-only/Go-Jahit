@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>{{ config('app.name') }} - @yield('title', 'Sistem Belanja Online')</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/icons/logo.png') }}" />
     <!-- Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -282,19 +283,24 @@
                                 </div>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                @if (auth()->user()->hasRole('admin', 'penjahit'))
+                                @if (auth()->user()->hasRole(['admin', 'penjahit']))
                                     <li>
                                         <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
-                                            <i class="bi bi-speedometer2"></i> Dashboard Admin
-                                        </a>
-                                    </li>
-                                @else
-                                    <li>
-                                        <a class="dropdown-item" href="{{ route('client.history.order') }}">
-                                            <i class="bi bi-card-list"></i> History Order
+                                            <i class="bi bi-speedometer2"></i> Dashboard
                                         </a>
                                     </li>
                                 @endif
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('client.history.order') }}">
+                                        <i class="bi bi-card-list"></i> History Order
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('logout') }}">
+                                        <i class="bi bi-box-arrow-right"></i> Logout
+                                    </a>
+                                </li>
 
                             </ul>
                         </li>

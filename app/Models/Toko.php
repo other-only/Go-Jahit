@@ -23,4 +23,5 @@ class Toko extends Model
     {
         return $this->hasMany(ProductDetail::class, 'toko_id');
     }
+
 }
