@@ -55,11 +55,11 @@
                                     <div class="d-flex align-items-center gap-2">
                                         <a href="{{ route('admin.produk.edit', $produk->id) }}"
                                             class="btn btn-sm btn-primary">Edit</a>
-                                        <form action="#" method="POST">
+                                        {{--  <form action="#" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                        </form>
+                                        </form>  --}}
                                     </div>
                                 </td>
                             </tr>
