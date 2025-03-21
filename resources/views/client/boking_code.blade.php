@@ -28,13 +28,15 @@
                         </button>
                     </div>
 
-                    <div class="alert alert-info text-start">
+                    <div class="text-start">
                         <strong>Detail Pesanan:</strong>
                         <div id="order-details">
                             <p><strong>Toko:</strong> {{ $order->toko->nama_toko }}</p>
                             <p><strong>Jenis Produk:</strong> {{ $order->produk->nama_produk }}</p>
                             <p><strong>Jenis Kain:</strong> {{ $order->detail->nama_detail }}</p>
-                            <p><strong>Jumlah:</strong> {{ $order->jumlah }}</p>
+                            <p><strong>Jumlah Baju:</strong> {{ $order->jumlah_baju }}</p>
+                            <p><strong>Jumlah Kain:</strong> {{ $order->jumlah_kain }}</p>
+                            <p class="text-uppercase"><strong>Ukuran Baju:</strong> {{ $order->ukuran_baju }}</p>
                             <p><strong>Jenis Pembayaran:</strong>
                                 {{ $order->jenis_pembayaran == 'transfer' ? 'Transfer Bank' : 'COD (Cash On Delivery)' }}
                             </p>

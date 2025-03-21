@@ -20,7 +20,8 @@ class BelanjaController extends Controller
     {
         $produks = $toko->produks;
         $details = $toko->details;
-        return view('client.order', compact('toko', 'produks', 'details'));
+        $user = auth()->user();
+        return view('client.order', compact('toko', 'produks', 'details', 'user'));
     }
 
     public function orderPost(Request $request, Toko $toko)
@@ -35,7 +36,9 @@ class BelanjaController extends Controller
                 'product_detail_id' => $request->fabricType,
                 'total_harga' => $request->total_price,
                 'bayar' => $request->paymentMethod,
-                'jumlah' => $request->quantity,
+                'jumlah_baju' => $request->clothing_quantity,
+                'jumlah_kain' => $request->fabric_quantity,
+                'ukuran_baju' => $request->size,
                 'nama_penerima' => $request->name,
                 'alamat_penerima' => $request->address,
                 'no_hp_penerima' => $request->phone,

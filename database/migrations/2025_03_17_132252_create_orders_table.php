@@ -23,7 +23,9 @@ return new class extends Migration
             $table->string('total_harga');
             $table->enum('bayar', ['cod', 'transfer']);
             $table->enum('status', ['dalam-proses', 'sudah-dikirim', 'menunggu-konfirmasi', 'selesai', 'batal'])->default('menunggu-konfirmasi');
-            $table->string('jumlah');
+            $table->string('jumlah_baju');
+            $table->string('jumlah_kain');
+            $table->string('ukuran_baju');
             $table->string('bukti_pembayaran')->nullable();
             $table->string('nama_penerima');
             $table->string('alamat_penerima');

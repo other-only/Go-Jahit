@@ -103,6 +103,32 @@
                                     </div>
                                 </div>
 
+                                <div class="mb-3">
+                                    <label for="size" class="form-label">Ukuran Baju</label>
+                                    <select class="form-control" id="size" name="size" required>
+                                        <option value="" selected disabled>Pilih ukuran</option>
+                                        <option value="S">S (Small)</option>
+                                        <option value="M">M (Medium)</option>
+                                        <option value="L">L (Large)</option>
+                                        <option value="XL">XL (Extra Large)</option>
+                                        <option value="XXL">XXL (Double Extra Large)</option>
+                                    </select>
+                                </div>
+
+
+                                <div class="mb-3">
+                                    <label for="clothing_quantity" class="form-label">Jumlah Baju</label>
+                                    <input type="number" class="form-control" id="clothing_quantity"
+                                        name="clothing_quantity" min="1" value="1" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="fabric_quantity" class="form-label">Jumlah Kain (meter)</label>
+                                    <input type="number" class="form-control" id="fabric_quantity" name="fabric_quantity"
+                                        min="1" value="1" step="0.5" required>
+                                </div>
+
+                                <!-- Replace the summary card with an updated version that includes all the new fields -->
                                 <div class="card mb-4">
                                     <div class="card-body">
                                         <h5 class="card-title">Ringkasan Harga</h5>
@@ -115,8 +141,14 @@
                                             <div class="col-5 text-end" id="fabric-price">Rp 0</div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-7">Jumlah:</div>
-                                            <div class="col-5 text-end"><span id="quantity-display">1</span>x</div>
+                                            <div class="col-7">Jumlah Baju:</div>
+                                            <div class="col-5 text-end"><span id="clothing-quantity-display">1</span>x
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-7">Jumlah Kain:</div>
+                                            <div class="col-5 text-end"><span id="fabric-quantity-display">1</span> meter
+                                            </div>
                                         </div>
                                         <hr>
                                         <div class="row fw-bold">
@@ -130,8 +162,8 @@
                                 <div class="mb-3">
                                     <label class="form-label">Jenis Pembayaran</label>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="paymentMethod" id="transfer"
-                                            value="transfer" required>
+                                        <input class="form-check-input" type="radio" name="paymentMethod"
+                                            id="transfer" value="transfer" required>
                                         <label class="form-check-label" for="transfer">
                                             Transfer Bank
                                         </label>
@@ -178,61 +210,63 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="quantity" class="form-label">Jumlah</label>
-                                    <input type="number" class="form-control" id="quantity" name="quantity"
-                                        min="1" value="1" required>
-                                </div>
-
-                                <div class="mb-3">
                                     <label for="name" class="form-label">Nama Penerima</label>
                                     <input type="text" class="form-control" id="name" name="name"
-                                        value="{{ auth()->user()->name }}" required>
+                                        value="{{ $user?->name }}" required>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="address" class="form-label">Alamat Pengiriman</label>
-                                    <textarea class="form-control" id="address" name="address" rows="3" required>{{ auth()->user()->alamat }}
+                                    <textarea class="form-control" id="address" name="address" rows="3" required>{{ $user?->alamat }}
                                     </textarea>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="phone" class="form-label">Nomor Telepon</label>
                                     <input type="tel" class="form-control" id="phone" name="phone"
-                                        value="{{ auth()->user()->no_hp }}" required>
+                                        value="{{ $user?->no_hp }}" required>
                                 </div>
 
                                 <div class="alert alert-danger" id="form-errors" style="display: none;">
                                     <ul id="error-list"></ul>
                                 </div>
 
-                                <div class="d-grid gap-2">
+                                @if ($user)
+                                    <div class="d-grid gap-2">
+                                        <button type="button" class="btn btn-secondary"
+                                            onclick="backToStores()">Kembali</button>
+                                        <button type="button" class="btn btn-success" id="submit-order">Kirim
+                                            Pesanan</button>
+                                    </div>
+                                @else
+                                    <span class="text-danger">Anda belum login. Silakan login untuk melanjutkan.</span>
+                                    <div class="d-grid gap-2"></div>
                                     <button type="button" class="btn btn-secondary"
                                         onclick="backToStores()">Kembali</button>
-                                    <button type="button" class="btn btn-success" id="submit-order">Kirim
-                                        Pesanan</button>
-                                </div>
-                            </form>
+                                    <a href="{{ route('login') }}" class="btn btn-success">Login</a>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Loading Spinner -->
-            <div id="loading-section" class="row" style="display: none;">
-                <div class="col-12 text-center">
-                    <div class="card shadow py-5">
-                        <div class="card-body">
-                            <div class="spinner-border text-success mb-4" style="width: 3rem; height: 3rem;"
-                                role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <h4>Memproses Pesanan...</h4>
-                            <p class="text-muted">Mohon tunggu sebentar, kami sedang memproses pesanan Anda</p>
-                        </div>
+                        @endif
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading-section" class="row" style="display: none;">
+            <div class="col-12 text-center">
+                <div class="card shadow py-5">
+                    <div class="card-body">
+                        <div class="spinner-border text-success mb-4" style="width: 3rem; height: 3rem;" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <h4>Memproses Pesanan...</h4>
+                        <p class="text-muted">Mohon tunggu sebentar, kami sedang memproses pesanan Anda</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 @endsection
 
@@ -269,6 +303,16 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            // Show/hide custom size section based on selection
+            $('#size').change(function() {
+                if ($(this).val() === 'Custom') {
+                    $('#customSizeSection').show();
+                } else {
+                    $('#customSizeSection').hide();
+                }
+                hideFieldError('size');
+            });
+
             // Fungsi untuk memformat angka ke format rupiah
             function formatRupiah(number) {
                 return 'Rp ' + new Intl.NumberFormat('id-ID').format(number);
@@ -278,7 +322,8 @@
             function calculateTotal() {
                 let productPrice = 0;
                 let fabricPrice = 0;
-                let quantity = parseInt($('#quantity').val()) || 1;
+                let clothingQuantity = parseInt($('#clothing_quantity').val()) || 1;
+                let fabricQuantity = parseFloat($('#fabric_quantity').val()) || 1;
 
                 // Harga produk
                 const selectedProduct = $('input[name="productType"]:checked');
@@ -295,10 +340,11 @@
                 }
 
                 // Update tampilan jumlah
-                $('#quantity-display').text(quantity);
+                $('#clothing-quantity-display').text(clothingQuantity);
+                $('#fabric-quantity-display').text(fabricQuantity);
 
-                // Hitung total harga
-                const totalPrice = (productPrice + fabricPrice) * quantity;
+                // Hitung total harga (harga produk * jumlah baju + harga kain * jumlah kain)
+                const totalPrice = (productPrice * clothingQuantity) + (fabricPrice * fabricQuantity);
                 $('#total-price').text(formatRupiah(totalPrice));
                 $('#total-price-input').val(totalPrice);
 
@@ -363,12 +409,20 @@
             });
 
             // Update total ketika jumlah berubah
-            $('#quantity').change(function() {
+            $('#clothing_quantity').change(function() {
                 calculateTotal();
-                hideFieldError('quantity');
+                hideFieldError('clothing_quantity');
             }).on('input', function() {
                 calculateTotal();
-                hideFieldError('quantity');
+                hideFieldError('clothing_quantity');
+            });
+
+            $('#fabric_quantity').change(function() {
+                calculateTotal();
+                hideFieldError('fabric_quantity');
+            }).on('input', function() {
+                calculateTotal();
+                hideFieldError('fabric_quantity');
             });
 
             // Hapus error pada perubahan input
@@ -466,6 +520,9 @@
             function validateForm() {
                 const productType = $('input[name="productType"]:checked').val();
                 const fabricType = $('input[name="fabricType"]:checked').val();
+                const size = $('#size').val();
+                const clothingQuantity = $('#clothing_quantity').val();
+                const fabricQuantity = $('#fabric_quantity').val();
                 const paymentMethod = $('input[name="paymentMethod"]:checked').val();
                 const name = $('#name').val();
                 const address = $('#address').val();
@@ -486,6 +543,38 @@
                 if (!fabricType) {
                     errors.push('Pilih jenis kain');
                     showFieldError('fabricType', 'Silakan pilih jenis kain');
+                    isValid = false;
+                }
+
+                if (!size) {
+                    errors.push('Pilih ukuran baju');
+                    showFieldError('size', 'Silakan pilih ukuran baju');
+                    isValid = false;
+                }
+
+                // Add validation for custom size if selected
+                if (size === 'Custom') {
+                    const lingkarDada = $('#custom_lingkar_dada').val();
+                    const lingkarPinggang = $('#custom_lingkar_pinggang').val();
+                    const panjangBaju = $('#custom_panjang_baju').val();
+                    const panjangLengan = $('#custom_panjang_lengan').val();
+
+                    if (!lingkarDada || !lingkarPinggang || !panjangBaju || !panjangLengan) {
+                        errors.push('Isi ukuran custom dengan lengkap');
+                        showFieldError('custom_size', 'Semua ukuran custom harus diisi');
+                        isValid = false;
+                    }
+                }
+
+                if (!clothingQuantity || clothingQuantity < 1) {
+                    errors.push('Masukkan jumlah baju yang valid');
+                    showFieldError('clothing_quantity', 'Jumlah baju harus minimal 1');
+                    isValid = false;
+                }
+
+                if (!fabricQuantity || fabricQuantity < 1) {
+                    errors.push('Masukkan jumlah kain yang valid');
+                    showFieldError('fabric_quantity', 'Jumlah kain harus minimal 1 meter');
                     isValid = false;
                 }
 
@@ -567,6 +656,17 @@
                             '<div class="text-danger field-error fabric-error mb-2">' + message + '</div>');
                         break;
 
+                    case 'size':
+                        $('#size').addClass('is-invalid');
+                        $('#size').after('<div class="invalid-feedback field-error">' + message + '</div>');
+                        break;
+
+                    case 'custom_size':
+                        $('#customSizeSection').addClass('border border-danger');
+                        $('#customSizeSection .card-title').after(
+                            '<div class="text-danger field-error custom-size-error mb-2">' + message + '</div>');
+                        break;
+
                     case 'paymentMethod':
                         // Tambahkan pesan error di bawah radio buttons
                         $('#cod').parents('.form-check').last().after(
@@ -599,6 +699,16 @@
                     case 'fabricType':
                         $('.fabric-card').removeClass('border-danger');
                         $('.fabric-error').remove();
+                        break;
+
+                    case 'size':
+                        $('#size').removeClass('is-invalid');
+                        $('#size').next('.invalid-feedback').remove();
+                        break;
+
+                    case 'custom_size':
+                        $('#customSizeSection').removeClass('border border-danger');
+                        $('.custom-size-error').remove();
                         break;
 
                     case 'paymentMethod':

@@ -20,7 +20,7 @@ Route::post('register', [LoginController::class, 'postRegister'])->middleware('g
 
 Route::get('logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
-Route::group(['prefix' => 'client', 'middleware' => 'auth'], function () {
+Route::group(['prefix' => 'client'], function () {
     Route::get('belanja', [BelanjaController::class, 'index'])->name('client.belanja');
     Route::get('order/{toko}', [BelanjaController::class, 'order'])->name('client.order');
     Route::post('order/{toko}', [BelanjaController::class, 'orderPost'])->name('client.order.post');
@@ -59,6 +59,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin|penjahit
     });
     Route::group(['prefix' => 'order'], function () {
         Route::get('', [OrderController::class, 'index'])->name('admin.order.index');
+        Route::get('detail/{order}', [OrderController::class, 'detail'])->name('admin.order.detail');
+        Route::post('update/{order}/status', [OrderController::class, 'status'])->name('admin.order.status');
+        Route::post('update/{order}/confirm', [OrderController::class, 'confirm'])->name('admin.order.confirm');
     });
     Route::group(['prefix' => 'penjahit', 'middleware' => 'role:admin'], function () {
         Route::get('', [PenjahitController::class, 'index'])->name('admin.penjahit.index');

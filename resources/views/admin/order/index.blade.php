@@ -12,12 +12,12 @@
                             <th>Kode Order</th>
                             <th>Produk</th>
                             <th>Detail</th>
-                            <th>Banyak Pemesanan</th>
+                            <th>Jumlah Baju</th>
+                            <th>Jumlah Kain</th>
+                            <th>Ukuran Baju</th>
                             <th>Total Harga</th>
                             <th>Metode Bayar</th>
-                            <th>Nama Pemesan</th>
-                            <th>Alamat Pemesan</th>
-                            <th>No Pemesan</th>
+                            <th>Status</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -27,17 +27,21 @@
                                 <td>{{ $order->kode_order }}</td>
                                 <td>{{ $order->produk->nama_produk }}</td>
                                 <td>{{ $order->detail->nama_detail }}</td>
-                                <td>{{ $order->jumlah }}</td>
+                                <td>{{ $order->jumlah_baju }}</td>
+                                <td>{{ $order->jumlah_kain }}</td>
+                                <td class="text-uppercase">{{ $order->ukuran_baju }}</td>
                                 <td>{{ formatRupiah($order->total_harga) }}</td>
                                 <td>
                                     {{ $order->bayar == 'transfer' ? 'Transfer Bank' : 'COD (Cash On Delivery)' }}
                                 </td>
-                                <td>{{ $order->nama_penerima }}</td>
-                                <td>{{ $order->alamat_penerima }}</td>
-                                <td>{{ $order->no_hp_penerima }}</td>
+                                <td>
+                                    <span
+                                        class="badge bg-label-{{ $order->getStatusColor() }}">{{ $order->getStatusOrder() }}</span>
+                                </td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
-                                        <a href="#" class="btn btn-sm btn-primary">Lihat</a>
+                                        <a href="{{ route('admin.order.detail', $order->id) }}"
+                                            class="btn btn-sm btn-primary">Lihat</a>
                                     </div>
                                 </td>
                             </tr>

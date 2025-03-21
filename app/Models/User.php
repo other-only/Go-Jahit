@@ -55,4 +55,17 @@ class User extends Authenticatable
     {
         return $this->hasOne(Toko::class, 'penjahit_id');
     }
+
+    public function getFoto()
+    {
+        if ($this->hasRole('penjahit')) {
+            return asset('assets/img/avatars/3.png');
+        }
+        if ($this->hasRole('admin')) {
+            return asset('assets/img/avatars/1.png');
+        }
+        if ($this->hasRole('pelanggan')) {
+            return asset('assets/img/avatars/2.png');
+        }
+    }
 }

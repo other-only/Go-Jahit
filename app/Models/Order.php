@@ -26,6 +26,52 @@ class Order extends Model
 
     public function getBuktiBayar()
     {
-        return Storage::url('bukti_bayar/' . $this->bukti_bayar);
+        return Storage::url('bukti_pembayaran/' . $this->bukti_pembayaran);
+    }
+
+    public function getStatusOrder()
+    {
+        switch ($this->status) {
+            case 'dalam-proses':
+                $status = "Dalam Proses";
+                break;
+            case 'sudah-dikirim':
+                $status = "Sudah Dikirim";
+                break;
+            case 'selesai':
+                $status = "Selesai";
+                break;
+            case 'batal':
+                $status = "Dibatalkan";
+                break;
+            default:
+                $status = "Menunggu Konfirmasi";
+                break;
+        }
+
+        return $status;
+    }
+
+    public function getStatusColor()
+    {
+        switch ($this->status) {
+            case 'dalam-proses':
+                $color = "warning";
+                break;
+            case 'sudah-dikirim':
+                $color = "info";
+                break;
+            case 'selesai':
+                $color = "success";
+                break;
+            case 'batal':
+                $color = "danger";
+                break;
+            default:
+                $color = "primary";
+                break;
+        }
+
+        return $color;
     }
 }
