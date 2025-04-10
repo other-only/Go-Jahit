@@ -268,7 +268,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="btn btn-sm btn-primary">
+                            <a href="{{ route('register') }}" class="btn btn-sm btn-primary">
                                 <i class="bi bi-person-plus"></i> Daftar
                             </a>
                         </li>
