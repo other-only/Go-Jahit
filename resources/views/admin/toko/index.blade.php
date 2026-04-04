@@ -41,7 +41,7 @@
                                 <td>{{ $toko->alamat }}</td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
-                                        <a href="{{ route('admin.toko.edit', $toko->id) }}') }}"
+                                        <a href="{{ route('admin.toko.edit', $toko->id) }}"
                                             class="btn btn-sm btn-primary">Edit</a>
                                     </div>
                                 </td>
