@@ -1,4 +1,4 @@
-@extends('panels.master')
+@extends('panels.penjahit-master')
 
 @section('title', 'Edit Toko')
 @section('content')
@@ -12,7 +12,7 @@
                 <div class="card mb-4">
                     <h5 class="card-header">Detail Toko</h5>
 
-                    <form action="{{ route('admin.toko.update', $toko->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('penjahit.toko.update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="card-body">
@@ -169,7 +169,7 @@
 
                             <div class="row justify-content-end">
                                 <div class="col-sm-10">
-                                    <a href="{{ route('admin.toko.index') }}"
+                                    <a href="{{ route('penjahit.toko.index') }}"
                                         class="btn btn-outline-secondary me-2">Batal</a>
                                     <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                                 </div>

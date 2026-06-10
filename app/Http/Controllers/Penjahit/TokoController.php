@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Penjahit;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Toko\EditRequest;
@@ -9,19 +9,25 @@ use Illuminate\Http\Request;
 
 class TokoController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $tokos = Toko::paginate(10);
-        return view('admin.toko.index', compact('tokos'));
+        $user = auth()->user();
+        $toko = Toko::where('penjahit_id', $user->id)->first();
+        return view('penjahit.toko.index', compact('toko'));
     }
 
-    public function edit(Request $request, Toko $toko)
+    public function edit()
     {
-        return view('admin.toko.edit', compact('toko'));
+        $user = auth()->user();
+        $toko = Toko::where('penjahit_id', $user->id)->firstOrFail();
+        return view('penjahit.toko.edit', compact('toko'));
     }
 
-    public function update(EditRequest $request, Toko $toko)
+    public function update(EditRequest $request)
     {
+        $user = auth()->user();
+        $toko = Toko::where('penjahit_id', $user->id)->firstOrFail();
+
         try {
             $toko->update([
                 'logo' => $request->logo ? $this->uploadImage($request->file('logo'), 'toko') : $toko->logo,
@@ -33,7 +39,7 @@ class TokoController extends Controller
                 'no_rekening' => $request->no_rekening,
                 'atas_nama' => $request->atas_nama,
             ]);
-            return redirect()->route('admin.toko.index')->with('success', 'Toko berhasil diupdate');
+            return redirect()->route('penjahit.toko.index')->with('success', 'Toko berhasil diupdate');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }

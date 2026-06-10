@@ -1,4 +1,4 @@
-@extends('panels.master')
+@extends('panels.penjahit-master')
 
 @section('title', 'Detail Toko')
 @section('content')
@@ -6,6 +6,12 @@
         <div class="card">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="card-header">Daftar Detail Toko</h5>
+                <div class="p-3">
+                    <a class="btn btn-primary" href="{{ route('penjahit.detail.create') }}">
+                        <i class="bi bi-plus-circle-fill"></i>
+                        <span class="text-nowrap">Tambah Detail</span>
+                    </a>
+                </div>
             </div>
 
             <div class="table-responsive text-nowrap">
@@ -20,7 +26,7 @@
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                        @foreach ($details as $detail)
+                        @forelse ($details as $detail)
                             <tr>
                                 <td>
                                     <img src="{{ $detail->getFoto() }}"
@@ -31,12 +37,22 @@
                                 <td>{{ formatRupiah($detail->harga) }}</td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
-                                        <a href="{{ route('admin.detail.edit', $detail->id) }}"
+                                        <a href="{{ route('penjahit.detail.edit', $detail->id) }}"
                                             class="btn btn-sm btn-primary">Edit</a>
+                                        <form action="{{ route('penjahit.detail.delete', $detail->id) }}" method="POST"
+                                            onsubmit="return confirm('Yakin ingin menghapus detail ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center">Belum ada detail. <a href="{{ route('penjahit.detail.create') }}">Tambah detail sekarang</a></td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

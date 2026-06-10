@@ -14,7 +14,7 @@ class PenjahitController extends Controller
 {
     public function index(Request $request)
     {
-        $penjahits = User::role('penjahit')->get();
+        $penjahits = User::role('penjahit')->paginate(10);
         return view('admin.penjahit.index', compact('penjahits'));
     }
     public function create(Request $request)

@@ -75,6 +75,11 @@
                         </div>
                     </div>
                 </div>
+                @if ($orders->hasPages())
+                    <div class="d-flex justify-content-center py-3">
+                        {{ $orders->links() }}
+                    </div>
+                @endif
             @else
                 <!-- Empty State -->
                 <div class="card shadow-sm">

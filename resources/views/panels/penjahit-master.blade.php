@@ -51,14 +51,15 @@
 
     <script src="{{ asset('assets/js/config.js') }}"></script>
     <style>
-        /* Design System: Serif Display Anchor for Admin */
-        h1, h2, h3, .card-title.fw-bold {
+        /* Design System: The Modern Atelier — Serif Display Anchor */
+        h1, h2, h3, .card-title.fw-bold, .page-title {
             font-family: 'Playfair Display', Georgia, serif;
             font-weight: 600;
             letter-spacing: -0.02em;
         }
         h1 { font-size: clamp(1.5rem, 3vw, 2rem); }
         h2 { font-size: clamp(1.25rem, 2.5vw, 1.65rem); }
+        body { font-family: 'Public Sans', system-ui, -apple-system, sans-serif; }
 
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
@@ -73,12 +74,12 @@
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
-            @include('panels.sidebar')
+            @include('panels.penjahit-sidebar')
 
             <!-- Layout container -->
             <div class="layout-page">
 
-                @include('panels.header')
+                @include('panels.penjahit-header')
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Flash Messages -->

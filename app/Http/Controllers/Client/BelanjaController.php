@@ -12,8 +12,17 @@ class BelanjaController extends Controller
 {
     public function index(Request $request)
     {
-        $tokos = Toko::has('produks')->has('details')->get();
-        return view('client.list_toko', compact('tokos'));
+        $search = $request->get('search');
+        $tokos = Toko::has('produks')->has('details')
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_toko', 'like', "%{$search}%")
+                      ->orWhere('alamat', 'like', "%{$search}%")
+                      ->orWhere('deskripsi', 'like', "%{$search}%");
+                });
+            })
+            ->paginate(12);
+        return view('client.list_toko', compact('tokos', 'search'));
     }
 
     public function order(Request $request, Toko $toko)
@@ -78,7 +87,7 @@ class BelanjaController extends Controller
 
     public function historyOrder(Request $request)
     {
-        $orders = Order::where('pelanggan_id', auth()->user()->id)->orderBy('created_at', 'desc')->get();
+        $orders = Order::where('pelanggan_id', auth()->user()->id)->orderBy('created_at', 'desc')->paginate(10);
         return view('client.order_history', compact('orders'));
     }
 

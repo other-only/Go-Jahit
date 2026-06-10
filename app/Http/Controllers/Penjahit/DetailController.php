@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Penjahit;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Detail\EditRequest;
@@ -10,15 +10,16 @@ use Illuminate\Http\Request;
 
 class DetailController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $details = ProductDetail::paginate(10);
-        return view('admin.detail.index', compact('details'));
+        $user = auth()->user();
+        $details = ProductDetail::where('toko_id', $user->toko->id)->paginate(10);
+        return view('penjahit.detail.index', compact('details'));
     }
 
-    public function create(Request $request)
+    public function create()
     {
-        return view('admin.detail.add');
+        return view('penjahit.detail.add');
     }
 
     public function store(StoreRequest $request)
@@ -31,19 +32,28 @@ class DetailController extends Controller
                 'harga' => $request->harga,
                 'foto' => $this->uploadImage($request->file('foto'), 'detail'),
             ]);
-            return redirect()->route('admin.detail.index')->with('success', 'Detail berhasil ditambahkan');
+            return redirect()->route('penjahit.detail.index')->with('success', 'Detail berhasil ditambahkan');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
     }
 
-    public function edit(Request $request, ProductDetail $detail)
+    public function edit(ProductDetail $detail)
     {
-        return view('admin.detail.edit', compact('detail'));
+        $user = auth()->user();
+        if ($detail->toko_id !== $user->toko->id) {
+            abort(403);
+        }
+        return view('penjahit.detail.edit', compact('detail'));
     }
 
     public function update(EditRequest $request, ProductDetail $detail)
     {
+        $user = auth()->user();
+        if ($detail->toko_id !== $user->toko->id) {
+            abort(403);
+        }
+
         try {
             $detail->update([
                 'nama_detail' => $request->nama_detail,
@@ -51,7 +61,22 @@ class DetailController extends Controller
                 'harga' => $request->harga,
                 'foto' => $request->hasFile('foto') ? $this->uploadImage($request->file('foto'), 'detail') : $detail->foto,
             ]);
-            return redirect()->route('admin.detail.index')->with('success', 'Detail berhasil diupdate');
+            return redirect()->route('penjahit.detail.index')->with('success', 'Detail berhasil diupdate');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function destroy(ProductDetail $detail)
+    {
+        $user = auth()->user();
+        if ($detail->toko_id !== $user->toko->id) {
+            abort(403);
+        }
+
+        try {
+            $detail->delete();
+            return redirect()->route('penjahit.detail.index')->with('success', 'Detail berhasil dihapus');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }

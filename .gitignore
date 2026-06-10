@@ -21,3 +21,7 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+.impeccable
+DESIGN.md
+PRODUCT.md
+docs

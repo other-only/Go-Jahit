@@ -1,10 +1,11 @@
-@extends('panels.master')
+@extends('panels.penjahit-master')
 
-@section('title', 'Order')
+@section('title', 'Pesanan')
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
-            <h5 class="card-header">Daftar Pemesanan</h5>
+            <h5 class="card-header">Daftar Pesanan</h5>
+
             <div class="table-responsive text-nowrap">
                 <table class="table">
                     <thead>
@@ -22,7 +23,7 @@
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                        @foreach ($orders as $order)
+                        @forelse ($orders as $order)
                             <tr>
                                 <td>{{ $order->kode_order }}</td>
                                 <td>{{ $order->produk->nama_produk }}</td>
@@ -40,12 +41,16 @@
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
-                                        <a href="{{ route('admin.order.detail', $order->id) }}"
+                                        <a href="{{ route('penjahit.pesanan.detail', $order->id) }}"
                                             class="btn btn-sm btn-primary">Lihat</a>
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="10" class="text-center">Belum ada pesanan masuk.</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

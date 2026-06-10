@@ -5,8 +5,28 @@
 @section('page-title', 'Pilih Toko')
 
 @section('content')
+    <!-- Search Bar -->
+    <div class="row mb-4">
+        <div class="col-md-8 mx-auto">
+            <form action="{{ route('client.belanja') }}" method="GET">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control form-control-lg"
+                        placeholder="Cari toko atau alamat..." value="{{ $search ?? '' }}">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-search"></i> Cari
+                    </button>
+                    @if ($search)
+                        <a href="{{ route('client.belanja') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-lg"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="store-selection" class="row mb-4">
-        @foreach ($tokos as $toko)
+        @forelse ($tokos as $toko)
             <div class="col-md-4 mb-4">
                 <div class="card store-card h-100">
                     <div class="card-header bg-white py-3">
@@ -34,14 +54,26 @@
                     </div>
                 </div>
             </div>
-        @endforeach
+        @empty
+            <div class="col-12">
+                <div class="alert alert-info text-center py-5">
+                    <i class="bi bi-shop-window display-4 d-block mb-3"></i>
+                    @if ($search)
+                        <h4>Toko tidak ditemukan</h4>
+                        <p class="mb-0">Tidak ada toko yang cocok dengan pencarian "{{ $search }}".</p>
+                        <a href="{{ route('client.belanja') }}" class="btn btn-primary mt-3">Lihat Semua Toko</a>
+                    @else
+                        <h4>Belum ada toko tersedia</h4>
+                        <p class="mb-0">Silakan coba kembali nanti.</p>
+                    @endif
+                </div>
+            </div>
+        @endforelse
     </div>
 
-    @if (count($tokos) == 0)
-        <div class="alert alert-info text-center py-5">
-            <i class="bi bi-shop-window display-4 d-block mb-3"></i>
-            <h4>Belum ada toko tersedia</h4>
-            <p class="mb-0">Silakan coba kembali nanti.</p>
+    @if ($tokos->hasPages())
+        <div class="d-flex justify-content-center">
+            {{ $tokos->links() }}
         </div>
     @endif
 @endsection
@@ -67,6 +99,10 @@
         .card-footer {
             border-top: none;
             background-color: transparent;
+        }
+
+        .input-group .btn {
+            border-radius: 0 6px 6px 0;
         }
     </style>
 @endpush

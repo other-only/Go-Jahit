@@ -5,40 +5,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <title>{{ config('app.name') }} - @yield('title', 'Sistem Belanja Online')</title>
+    <title>{{ config('app.name') }} - @yield('title', 'Pesan Jahit Online')</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/icons/logo.png') }}" />
     <!-- Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <style>
         :root {
-            --primary-color: #696cff;
-            --secondary-color: #6c757d;
-            --accent-color: #ffc107;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
+            --signal-violet: #696cff;
+            --signal-violet-deep: #5a5fe0;
+            --cool-gray: #6c757d;
+            --warm-gold: #ffc107;
+            --atelier-mist: #f5f7fa;
+            --paper: #ffffff;
+            --ink: #212529;
+            --ink-muted: #6c757d;
+            --frost: rgba(0, 0, 0, 0.05);
+            --leaf: #71dd37;
+            --ember: #ff3e1d;
+            --honey: #ffab00;
+            --sky: #03c3ec;
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f5f7fa;
-            color: var(--dark-color);
+            font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+            background-color: var(--atelier-mist);
+            color: var(--ink);
+            line-height: 1.6;
+        }
+
+        /* Typography hierarchy */
+        h1, h2, h3, h4, .serif-heading {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 600;
+            text-wrap: balance;
+        }
+
+        h1, .display-heading {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        h2, .section-heading {
+            font-size: clamp(1.25rem, 3vw, 1.75rem);
+            line-height: 1.3;
+        }
+
+        h5, h6, .card-title {
+            font-family: 'Poppins', system-ui, sans-serif;
+            font-weight: 600;
         }
 
         /* Navbar Styles */
         .navbar {
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            background-color: white;
+            background-color: var(--paper);
         }
 
         .navbar-brand {
+            font-family: 'Playfair Display', Georgia, serif;
             font-weight: 700;
-            color: var(--primary-color);
+            font-size: 1.35rem;
+            color: var(--signal-violet);
         }
 
         .navbar-brand img {
@@ -48,17 +81,18 @@
 
         .nav-link {
             font-weight: 500;
-            color: var(--dark-color);
+            color: var(--ink);
             position: relative;
             margin: 0 5px;
+            font-size: 0.875rem;
         }
 
         .nav-link:hover {
-            color: var(--primary-color);
+            color: var(--signal-violet);
         }
 
         .nav-link.active {
-            color: var(--primary-color);
+            color: var(--signal-violet);
         }
 
         .nav-link.active::after {
@@ -68,56 +102,68 @@
             left: 0;
             right: 0;
             height: 3px;
-            background-color: var(--primary-color);
+            background-color: var(--signal-violet);
             border-radius: 10px;
         }
 
         /* Button Styles */
+        .btn {
+            border-radius: 10px;
+            font-weight: 500;
+            padding: 12px 24px;
+            transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
         .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
+            background-color: var(--signal-violet);
+            border-color: var(--signal-violet);
         }
 
         .btn-primary:hover {
-            background-color: #146c43;
-            border-color: #146c43;
+            background-color: var(--signal-violet-deep);
+            border-color: var(--signal-violet-deep);
         }
 
         .btn-outline-primary {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
+            color: var(--signal-violet);
+            border-color: var(--signal-violet);
         }
 
         .btn-outline-primary:hover {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
+            background-color: var(--signal-violet);
+            border-color: var(--signal-violet);
+            color: var(--paper);
         }
 
-        /* Card Styles */
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.8125rem;
+        }
+
+        /* Card Styles — Flat by Default */
         .card {
             border-radius: 10px;
             border: none;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .card-header {
-            background-color: white;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background-color: var(--paper);
+            border-bottom: 1px solid var(--frost);
             border-radius: 10px 10px 0 0 !important;
         }
 
-        .card-header.bg-success {
-            background-color: var(--primary-color) !important;
-        }
-
-        /* Store, Product, Fabric Cards */
+        /* Interactive Cards — Lift on Hover */
         .store-card,
         .product-card,
         .fabric-card {
             cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
         }
 
@@ -129,17 +175,17 @@
         }
 
         .store-card.selected {
-            border: 3px solid var(--primary-color);
+            border: 3px solid var(--signal-violet);
         }
 
         .product-card input:checked+label,
         .fabric-card input:checked+label {
-            color: var(--primary-color);
+            color: var(--signal-violet);
         }
 
         .form-check-input:checked {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
+            background-color: var(--signal-violet);
+            border-color: var(--signal-violet);
         }
 
         .form-check {
@@ -157,26 +203,71 @@
         }
 
         /* Form Controls */
+        .form-control, .form-select {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 0.9375rem;
+        }
+
         .form-control:focus,
         .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+            border-color: var(--signal-violet);
+            box-shadow: 0 0 0 0.25rem rgba(105, 108, 255, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: var(--ink-muted);
         }
 
         /* Footer Styles */
         .footer {
-            background-color: white;
-            padding: 2rem 0;
+            background-color: var(--paper);
+            padding: 2.5rem 0;
             margin-top: 3rem;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
         }
 
+        .footer h5 {
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer h6 {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .footer a {
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: var(--signal-violet) !important;
+        }
+
         /* Page Title */
         .page-title {
-            color: var(--primary-color);
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 600;
+            color: var(--ink);
             margin-bottom: 1.5rem;
-            border-left: 5px solid var(--primary-color);
-            padding-left: 15px;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--signal-violet);
+            border-radius: 2px;
         }
 
         /* Avatar */
@@ -185,45 +276,87 @@
             height: 40px;
             border-radius: 50%;
             overflow: hidden;
-            background-color: var(--light-color);
+            background-color: var(--atelier-mist);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary-color);
-            font-weight: bold;
+            color: var(--signal-violet);
+            font-weight: 600;
             margin-left: 10px;
         }
 
         /* Dropdown */
         .dropdown-menu {
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
             border: none;
             padding: 0.5rem 0;
         }
 
         .dropdown-item {
             padding: 0.5rem 1.5rem;
+            font-size: 0.875rem;
         }
 
         .dropdown-item:hover {
-            background-color: rgba(25, 135, 84, 0.1);
-            color: var(--primary-color);
+            background-color: rgba(105, 108, 255, 0.08);
+            color: var(--signal-violet);
         }
 
         .dropdown-item i {
             margin-right: 10px;
-            color: var(--primary-color);
+            color: var(--signal-violet);
         }
 
-        /* Cart Badge */
-        .badge-cart {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            font-size: 0.6rem;
-            background-color: var(--accent-color);
-            color: var(--dark-color);
+        /* Status Badges */
+        .badge {
+            font-weight: 500;
+            font-size: 0.8125rem;
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+
+        /* Loading Spinner */
+        .spinner-border {
+            color: var(--signal-violet);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            background-color: var(--signal-violet);
+        }
+
+        /* Text utilities */
+        .text-balance {
+            text-wrap: balance;
+        }
+
+        .text-muted {
+            color: var(--ink-muted) !important;
+        }
+
+        /* Empty state */
+        .empty-state-icon {
+            font-size: 3rem;
+            color: var(--cool-gray);
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                transform: none !important;
+            }
+
+            .card:hover,
+            .store-card:hover,
+            .product-card:hover,
+            .fabric-card:hover {
+                transform: none !important;
+            }
         }
     </style>
     @stack('styles')
@@ -234,7 +367,7 @@
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{{ route('client.belanja') }}">
-                {{ config('app.name', 'FashionMart') }}
+                {{ config('app.name', 'Go-Jahit') }}
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -251,17 +384,15 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('client.track.order') ? 'active' : '' }}"
                             href="{{ route('client.track.order') }}">
-                            <i class="bi bi-truck"></i> Lihat Status Order
+                            <i class="bi bi-truck"></i> Cek Status
                         </a>
                     </li>
                 </ul>
 
                 <!-- Right Side Nav -->
                 <ul class="navbar-nav">
-                    <!-- Shopping Cart Button -->
-
                     @guest
-                        <!-- Login and Register Buttons -->
+                        <!-- Login and Register -->
                         <li class="nav-item">
                             <a href="{{ route('login') }}" class="btn btn-sm btn-outline-primary me-2">
                                 <i class="bi bi-box-arrow-in-right"></i> Masuk
@@ -283,25 +414,32 @@
                                 </div>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                @if (auth()->user()->hasRole(['admin', 'penjahit']))
+                                @if (auth()->user()->hasRole('admin'))
                                     <li>
                                         <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
-                                            <i class="bi bi-speedometer2"></i> Dashboard
+                                            <i class="bi bi-speedometer2"></i> Dashboard Admin
+                                        </a>
+                                    </li>
+                                @elseif (auth()->user()->hasRole('penjahit'))
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('penjahit.dashboard') }}">
+                                            <i class="bi bi-speedometer2"></i> Dashboard Penjahit
                                         </a>
                                     </li>
                                 @endif
                                 <li>
                                     <a class="dropdown-item" href="{{ route('client.history.order') }}">
-                                        <i class="bi bi-card-list"></i> History Order
+                                        <i class="bi bi-card-list"></i> Riwayat Pesanan
                                     </a>
                                 </li>
-
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
                                 <li>
                                     <a class="dropdown-item" href="{{ route('logout') }}">
-                                        <i class="bi bi-box-arrow-right"></i> Logout
+                                        <i class="bi bi-box-arrow-right"></i> Keluar
                                     </a>
                                 </li>
-
                             </ul>
                         </li>
                     @endguest
@@ -310,7 +448,7 @@
         </div>
     </nav>
 
-    <!-- Main Content Area -->
+    <!-- Main Content -->
     <div class="container py-4">
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -327,7 +465,7 @@
         @endif
 
         @hasSection('page-title')
-            <h2 class="page-title mb-4">@yield('page-title')</h2>
+            <h2 class="page-title">@yield('page-title')</h2>
         @endif
 
         @yield('content')
@@ -338,55 +476,45 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4 mb-md-0">
-                    <h5 class="text-primary">{{ config('app.name', 'FashionMart') }}</h5>
-                    <p class="text-muted">
-                        Temukan berbagai pilihan produk fashion berkualitas dengan harga terbaik. Kami menyediakan
-                        beragam jenis kain dan model pakaian untuk kebutuhan Anda.
+                    <h5 class="text-primary mb-3">{{ config('app.name', 'Go-Jahit') }}</h5>
+                    <p class="text-muted small">
+                        Platform jahit online yang menghubungkan Anda dengan penjahit profesional
+                        di seluruh Indonesia. Temukan model, pilih kain, dan pesan — semua dari rumah.
                     </p>
-                    <div class="social-icons">
-                        <a href="#" class="text-secondary me-2"><i class="bi bi-facebook fs-5"></i></a>
-                        <a href="#" class="text-secondary me-2"><i class="bi bi-instagram fs-5"></i></a>
-                        <a href="#" class="text-secondary me-2"><i class="bi bi-twitter fs-5"></i></a>
-                        <a href="#" class="text-secondary"><i class="bi bi-whatsapp fs-5"></i></a>
-                    </div>
                 </div>
                 <div class="col-md-2 mb-4 mb-md-0">
-                    <h6 class="text-dark">Belanja</h6>
+                    <h6 class="text-dark">Layanan</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-secondary text-decoration-none">Produk Terbaru</a></li>
-                        <li><a href="#" class="text-secondary text-decoration-none">Produk Terlaris</a></li>
-                        <li><a href="#" class="text-secondary text-decoration-none">Diskon</a></li>
-                        <li><a href="#" class="text-secondary text-decoration-none">Semua Toko</a></li>
+                        <li class="mb-1"><a href="{{ route('client.belanja') }}" class="text-secondary text-decoration-none small">Cari Toko</a></li>
+                        <li class="mb-1"><a href="{{ route('client.track.order') }}" class="text-secondary text-decoration-none small">Lacak Pesanan</a></li>
+                        <li class="mb-1"><a href="{{ route('register') }}" class="text-secondary text-decoration-none small">Daftar Akun</a></li>
                     </ul>
                 </div>
                 <div class="col-md-2 mb-4 mb-md-0">
                     <h6 class="text-dark">Bantuan</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-secondary text-decoration-none">Cara Pembelian</a></li>
-                        <li><a href="#" class="text-secondary text-decoration-none">Pengiriman</a></li>
-                        <li><a href="#" class="text-secondary text-decoration-none">Pembayaran</a></li>
-                        <li><a href="#" class="text-secondary text-decoration-none">FAQ</a></li>
+                        <li class="mb-1"><a href="#" class="text-secondary text-decoration-none small">Cara Pesan</a></li>
+                        <li class="mb-1"><a href="#" class="text-secondary text-decoration-none small">Pembayaran</a></li>
+                        <li class="mb-1"><a href="#" class="text-secondary text-decoration-none small">Pengiriman</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h6 class="text-dark">Hubungi Kami</h6>
-                    <ul class="list-unstyled">
-                        <li class="mb-2 text-secondary"><i class="bi bi-geo-alt me-2"></i> Jl. Fashion No. 123,
-                            Jakarta Pusat</li>
-                        <li class="mb-2 text-secondary"><i class="bi bi-telephone me-2"></i> +62 123 4567 890</li>
-                        <li class="mb-2 text-secondary"><i class="bi bi-envelope me-2"></i> info@fashionmart.com</li>
+                    <h6 class="text-dark">Kontak</h6>
+                    <ul class="list-unstyled small text-secondary">
+                        <li class="mb-2"><i class="bi bi-envelope me-2"></i> hello@go-jahit.com</li>
+                        <li class="mb-2"><i class="bi bi-instagram me-2"></i> @gojahit</li>
                     </ul>
                 </div>
             </div>
-            <hr>
+            <hr class="my-3">
             <div class="row">
                 <div class="col-md-6">
-                    <p class="text-muted small mb-0">&copy; {{ date('Y') }}
-                        {{ config('app.name', 'FashionMart') }}. Semua Hak Dilindungi.</p>
+                    <p class="text-muted small mb-0">&copy; {{ date('Y') }} {{ config('app.name', 'Go-Jahit') }}. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <p class="text-muted small mb-0">
-                        <a href="#" class="text-secondary text-decoration-none">Syarat & Ketentuan</a> |
+                        <a href="#" class="text-secondary text-decoration-none">Syarat & Ketentuan</a>
+                        <span class="mx-1">·</span>
                         <a href="#" class="text-secondary text-decoration-none">Kebijakan Privasi</a>
                     </p>
                 </div>
@@ -398,9 +526,8 @@
     <script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}"></script>
     <script src="{{ asset('assets/vendor/js/bootstrap.js') }}"></script>
 
-    <!-- Custom JS -->
     <script>
-        // Auto-hide alert messages after 5 seconds
+        // Auto-hide alerts after 5 seconds
         $(document).ready(function() {
             setTimeout(function() {
                 $('.alert').alert('close');

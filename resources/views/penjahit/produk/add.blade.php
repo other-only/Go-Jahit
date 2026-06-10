@@ -1,24 +1,24 @@
-@extends('panels.master')
+@extends('panels.penjahit-master')
 
-@section('title', 'Tambah Detail Kain')
+@section('title', 'Tambah Produk')
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <h4 class="fw-bold py-3 mb-4">
-            <span class="text-muted fw-light">Detail /</span> Tambah Detail Kain
+            <span class="text-muted fw-light">Produk /</span> Tambah Produk
         </h4>
 
         <div class="row">
             <div class="col-md-12">
                 <div class="card mb-4">
-                    <h5 class="card-header">Detail Kain Baru</h5>
+                    <h5 class="card-header">Detail Produk Baru</h5>
 
-                    <form action="{{ route('admin.detail.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('penjahit.produk.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="card-body">
-                            <!-- Foto Detail -->
+                            <!-- Foto Produk -->
                             <div class="row mb-4">
-                                <label class="col-sm-2 col-form-label" for="upload">Foto Kain</label>
+                                <label class="col-sm-2 col-form-label" for="upload">Foto Produk</label>
                                 <div class="col-sm-10">
                                     <div class="d-flex align-items-start gap-4 mb-3">
                                         <img src="{{ asset('assets/icons/placeholder_produk.jpeg') }}"
@@ -77,14 +77,14 @@
                                 </div>
                             </div>
 
-                            <!-- Nama Detail -->
+                            <!-- Nama Produk -->
                             <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label" for="nama_detail">Nama Kain</label>
+                                <label class="col-sm-2 col-form-label" for="nama_produk">Nama Produk</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control @error('nama_detail') is-invalid @enderror"
-                                        id="nama_detail" name="nama_detail" value="{{ old('nama_detail') }}"
-                                        placeholder="Nama Kain" required />
-                                    @error('nama_detail')
+                                    <input type="text" class="form-control @error('nama_produk') is-invalid @enderror"
+                                        id="nama_produk" name="nama_produk" value="{{ old('nama_produk') }}"
+                                        placeholder="Nama Produk" required />
+                                    @error('nama_produk')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -95,7 +95,7 @@
                                 <label class="col-sm-2 col-form-label" for="deskripsi">Deskripsi</label>
                                 <div class="col-sm-10">
                                     <textarea class="form-control @error('deskripsi') is-invalid @enderror" id="deskripsi" name="deskripsi" rows="4"
-                                        placeholder="Deskripsi jenis kain">{{ old('deskripsi') }}</textarea>
+                                        placeholder="Deskripsi produk">{{ old('deskripsi') }}</textarea>
                                     @error('deskripsi')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -112,8 +112,7 @@
                                             id="harga" name="harga" value="{{ old('harga', 0) }}" placeholder="0"
                                             min="0" step="1000" required />
                                     </div>
-                                    <div class="form-text">Masukkan harga tambahan untuk jenis kain ini dalam Rupiah (tanpa
-                                        titik atau koma)</div>
+                                    <div class="form-text">Masukkan harga dalam Rupiah tanpa titik atau koma</div>
                                     @error('harga')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -122,9 +121,9 @@
 
                             <div class="row justify-content-end">
                                 <div class="col-sm-10">
-                                    <a href="{{ route('admin.detail.index') }}"
+                                    <a href="{{ route('penjahit.produk.index') }}"
                                         class="btn btn-outline-secondary me-2">Batal</a>
-                                    <button type="submit" class="btn btn-primary">Simpan Detail</button>
+                                    <button type="submit" class="btn btn-primary">Simpan Produk</button>
                                 </div>
                             </div>
                         </div>
@@ -139,7 +138,6 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Elemen-elemen DOM
             const uploadInput = document.getElementById('upload');
             const previewImage = document.getElementById('uploadedAvatar');
             const previewContainer = document.getElementById('preview-container');
@@ -147,48 +145,36 @@
             const fileName = document.getElementById('file-name');
             const fileSize = document.getElementById('file-size');
 
-            // Event listener untuk file input
             uploadInput.addEventListener('change', function() {
                 if (this.files && this.files[0]) {
                     const file = this.files[0];
-
-                    // Buat URL objek untuk file
                     const objectUrl = URL.createObjectURL(file);
 
-                    // Update preview
                     previewImage.src = objectUrl;
                     previewImg.src = objectUrl;
 
-                    // Update informasi file
                     fileName.textContent = file.name;
                     fileSize.textContent = (file.size / 1024).toFixed(2);
 
-                    // Tampilkan container preview
                     previewContainer.style.display = 'block';
                 }
             });
 
-            // Format harga
             const hargaInput = document.getElementById('harga');
             if (hargaInput) {
                 hargaInput.addEventListener('blur', function() {
-                    // Hapus karakter non-numerik dan pastikan tidak kosong
                     let nilai = this.value.replace(/\D/g, '');
                     if (nilai === '') nilai = '0';
-
-                    // Tampilkan kembali dalam input
                     this.value = nilai;
                 });
             }
         });
 
-        // Reset foto ke default
         function resetFoto() {
-            const defaultFoto = "{{ asset('assets/img/placeholder-fabric.png') }}";
+            const defaultFoto = "{{ asset('assets/img/placeholder-product.png') }}";
             document.getElementById('uploadedAvatar').src = defaultFoto;
             document.getElementById('upload').value = '';
 
-            // Sembunyikan preview
             const previewContainer = document.getElementById('preview-container');
             if (previewContainer) {
                 previewContainer.style.display = 'none';

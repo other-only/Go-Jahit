@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Penjahit;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Produk\EditRequest;
@@ -12,18 +12,14 @@ class ProdukController extends Controller
 {
     public function index()
     {
-        $produks = Product::paginate(10);
-        return view('admin.produk.index', compact('produks'));
+        $user = auth()->user();
+        $produks = Product::where('toko_id', $user->toko->id)->paginate(10);
+        return view('penjahit.produk.index', compact('produks'));
     }
 
     public function create()
     {
-        return view('admin.produk.add');
-    }
-
-    public function edit(Request $request, Product $produk)
-    {
-        return view('admin.produk.edit', compact('produk'));
+        return view('penjahit.produk.add');
     }
 
     public function store(StoreRequest $request)
@@ -36,26 +32,54 @@ class ProdukController extends Controller
                 'foto' => $this->uploadImage($request->file('foto'), 'produk'),
                 'toko_id' => auth()->user()->toko->id,
             ]);
-            return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil ditambahkan');
+            return redirect()->route('penjahit.produk.index')->with('success', 'Produk berhasil ditambahkan');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
     }
 
+    public function edit(Product $produk)
+    {
+        $user = auth()->user();
+        if ($produk->toko_id !== $user->toko->id) {
+            abort(403);
+        }
+        return view('penjahit.produk.edit', compact('produk'));
+    }
+
     public function update(EditRequest $request, Product $produk)
     {
+        $user = auth()->user();
+        if ($produk->toko_id !== $user->toko->id) {
+            abort(403);
+        }
+
         try {
             $produk->update([
                 'nama_produk' => $request->nama_produk,
                 'deskripsi' => $request->deskripsi,
                 'harga' => $request->harga,
                 'foto' => $request->hasFile('foto') ? $this->uploadImage($request->file('foto'), 'produk') : $produk->foto,
-                'toko_id' => $produk->toko_id,
+                'toko_id' => $user->toko->id,
             ]);
-            return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil diupdate');
+            return redirect()->route('penjahit.produk.index')->with('success', 'Produk berhasil diupdate');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
     }
 
+    public function destroy(Product $produk)
+    {
+        $user = auth()->user();
+        if ($produk->toko_id !== $user->toko->id) {
+            abort(403);
+        }
+
+        try {
+            $produk->delete();
+            return redirect()->route('penjahit.produk.index')->with('success', 'Produk berhasil dihapus');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
 }

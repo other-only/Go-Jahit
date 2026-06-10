@@ -24,6 +24,9 @@ class LoginController extends Controller
             if ($user->hasRole('pelanggan')) {
                 return redirect()->route('client.belanja');
             }
+            if ($user->hasRole('penjahit')) {
+                return redirect()->route('penjahit.dashboard');
+            }
             return redirect()->route('admin.dashboard');
         }
         return back()->withInput();
