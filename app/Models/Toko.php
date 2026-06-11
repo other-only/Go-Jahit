@@ -9,6 +9,11 @@ class Toko extends Model
 {
     protected $guarded = [];
 
+    protected $casts = [
+        'latitude' => 'decimal:7',
+        'longitude' => 'decimal:7',
+    ];
+
     public function getLogo()
     {
         return Storage::url('toko/' . $this->logo);
