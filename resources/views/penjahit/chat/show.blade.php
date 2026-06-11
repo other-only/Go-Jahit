@@ -53,6 +53,13 @@
 
 @push('scripts')
 <script>
+    // Prevent double submit
+    document.querySelector('form')?.addEventListener('submit', function() {
+        const btn = this.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.innerHTML = 'Mengirim...';
+    });
+
     const conversationId = {{ $conversation->id }};
     const messagesList = document.getElementById('messages-list');
     const msgContainer = document.getElementById('message-container');
