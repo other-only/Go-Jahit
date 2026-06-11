@@ -540,6 +540,34 @@
         });
     </script>
 
+    <script>
+        // Geolocation: cari toko terdekat
+        (function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            if (!urlParams.has('lat') && !urlParams.has('lng') && navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(pos) {
+                        var lat = pos.coords.latitude;
+                        var lng = pos.coords.longitude;
+                        var url = new URL(window.location.href);
+                        url.searchParams.set('lat', lat);
+                        url.searchParams.set('lng', lng);
+                        window.location.href = url.toString();
+                    },
+                    function() {
+                        // Izin ditolak — tampilkan input manual
+                        var manual = document.getElementById('manual-location');
+                        if (manual) manual.style.display = 'block';
+                    },
+                    { enableHighAccuracy: true, timeout: 10000 }
+                );
+            } else if (!navigator.geolocation) {
+                var manual = document.getElementById('manual-location');
+                if (manual) manual.style.display = 'block';
+            }
+        })();
+    </script>
+
     @stack('scripts')
 </body>
 
