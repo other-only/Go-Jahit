@@ -125,7 +125,7 @@
                                         </div>
                                     </div>
                                     <div class="form-text">
-                                        Koordinat lokasi toko. Bisa diisi otomatis via tombol "Deteksi Lokasi" atau manual.
+                                        Koordinat lokasi toko. Klik "Gunakan Lokasi Saya" untuk isi otomatis via GPS, atau input manual.
                                         @if(!$toko->latitude || !$toko->longitude)
                                             <br><span class="text-warning fw-semibold">⚠️ Belum diisi — toko tidak akan muncul di pencarian terdekat.</span>
                                         @endif
