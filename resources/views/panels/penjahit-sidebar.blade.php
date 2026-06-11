@@ -25,6 +25,17 @@
             </a>
         </li>
 
+        <!-- Chat -->
+        <li class="menu-item {{ request()->is('penjahit/chat*') ? 'active' : '' }}">
+            <a href="{{ route('penjahit.chat.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-chat"></i>
+                <div class="text-truncate" data-i18n="Chat">Chat</div>
+                @if(isset($unreadChatCount) && $unreadChatCount > 0)
+                    <span class="badge rounded-pill bg-danger ms-auto">{{ $unreadChatCount }}</span>
+                @endif
+            </a>
+        </li>
+
         <!-- Toko -->
         <li class="menu-item {{ request()->is('penjahit/toko*') ? 'active open' : '' }}">
             <a href="{{ route('penjahit.toko.index') }}" class="menu-link">

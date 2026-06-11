@@ -433,6 +433,11 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <a class="dropdown-item" href="{{ route('client.chat.index') }}">
+                                        <i class="bi bi-chat-dots"></i> Chat
+                                    </a>
+                                </li>
+                                <li>
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li>

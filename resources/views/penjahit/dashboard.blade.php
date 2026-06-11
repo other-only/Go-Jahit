@@ -114,6 +114,38 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Chat Widget -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">💬 Pesan Terbaru</h5>
+                            <a href="{{ route('penjahit.chat.index') }}" class="btn btn-sm btn-primary">Lihat Semua</a>
+                        </div>
+                        <div class="card-body">
+                            @php
+                                $recentChats = auth()->user()->penjahitConversations()
+                                    ->with('customer', 'latestMessage')
+                                    ->orderBy('last_message_at', 'desc')
+                                    ->take(5)
+                                    ->get();
+                            @endphp
+                            @forelse($recentChats as $chat)
+                                <a href="{{ route('penjahit.chat.show', $chat) }}" class="text-decoration-none text-dark d-block border-bottom pb-2 mb-2">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>{{ $chat->customer->name }}</strong>
+                                        <small class="text-muted">{{ $chat->last_message_at ? $chat->last_message_at->diffForHumans() : '' }}</small>
+                                    </div>
+                                    <small class="text-muted">{{ $chat->latestMessage ? Str::limit($chat->latestMessage->message, 60) : 'Belum ada pesan' }}</small>
+                                </a>
+                            @empty
+                                <p class="text-muted mb-0">Belum ada chat masuk.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
         @else
             <div class="row">
                 <div class="col-12">

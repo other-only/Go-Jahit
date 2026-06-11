@@ -51,6 +51,9 @@
                         <a href="{{ route('client.order', ['toko' => $toko->id]) }}" class="btn btn-primary">
                             <i class="bi bi-shop me-1"></i> Kunjungi Toko
                         </a>
+                        <a href="{{ route('client.chat.start', $toko->penjahit_id) }}" class="btn btn-outline-primary ms-2" title="Chat">
+                            <i class="bi bi-chat-dots"></i>
+                        </a>
                     </div>
                 </div>
             </div>
