@@ -30,6 +30,8 @@ class EditRequest extends FormRequest
             'bank' => 'required|string|in:bca,bni,bri,mandiri',
             'no_rekening' => 'required|string|max:20',
             'atas_nama' => 'required|string|max:255',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         ];
     }
 }

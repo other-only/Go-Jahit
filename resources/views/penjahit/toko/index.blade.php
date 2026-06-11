@@ -9,6 +9,11 @@
 
             @if ($toko)
                 <div class="card-body">
+                    <div class="d-flex justify-content-end mb-3">
+                        <a href="{{ route('penjahit.toko.edit') }}" class="btn btn-primary">
+                            <i class="bx bx-edit"></i> Edit Toko
+                        </a>
+                    </div>
                     <div class="row mb-3">
                         <div class="col-sm-3">
                             @if ($toko->logo)
@@ -44,6 +49,17 @@
                                 <tr>
                                     <td><strong>Atas Nama</strong></td>
                                     <td>{{ $toko->atas_nama ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Lokasi</strong></td>
+                                    <td>
+                                        @if($toko->latitude && $toko->longitude)
+                                            <span class="badge bg-label-success">Terverifikasi</span>
+                                            <small class="text-muted">({{ $toko->latitude }}, {{ $toko->longitude }})</small>
+                                        @else
+                                            <span class="badge bg-label-warning">Belum set lokasi</span>
+                                        @endif
+                                    </td>
                                 </tr>
                             </table>
                         </div>

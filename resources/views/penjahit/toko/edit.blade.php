@@ -96,6 +96,39 @@
                                 </div>
                             </div>
 
+                            <!-- Lokasi (Latitude / Longitude) -->
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">Lokasi</label>
+                                <div class="col-sm-10">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <input type="text" class="form-control @error('latitude') is-invalid @enderror"
+                                                id="latitude" name="latitude" value="{{ old('latitude', $toko->latitude) }}"
+                                                placeholder="Latitude (opsional)" />
+                                            @error('latitude')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <input type="text" class="form-control @error('longitude') is-invalid @enderror"
+                                                id="longitude" name="longitude" value="{{ old('longitude', $toko->longitude) }}"
+                                                placeholder="Longitude (opsional)" />
+                                            @error('longitude')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-text">
+                                        Koordinat lokasi toko. Biarkan kosong jika tidak tahu,
+                                        atau gunakan <a href="https://www.google.com/maps" target="_blank">Google Maps</a>
+                                        untuk mendapatkannya.
+                                        @if(!$toko->latitude || !$toko->longitude)
+                                            <span class="text-warning fw-semibold">⚠️ Belum diisi — toko tidak akan muncul di pencarian terdekat.</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- No. WhatsApp -->
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label" for="no_wa">No. WhatsApp</label>

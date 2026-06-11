@@ -38,6 +38,8 @@ class TokoController extends Controller
                 'bank' => $request->bank,
                 'no_rekening' => $request->no_rekening,
                 'atas_nama' => $request->atas_nama,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
             ]);
             return redirect()->route('penjahit.toko.index')->with('success', 'Toko berhasil diupdate');
         } catch (\Exception $e) {
