@@ -56,6 +56,16 @@ class User extends Authenticatable
         return $this->hasOne(Toko::class, 'penjahit_id');
     }
 
+    public function customerConversations()
+    {
+        return $this->hasMany(Conversation::class, 'customer_id');
+    }
+
+    public function penjahitConversations()
+    {
+        return $this->hasMany(Conversation::class, 'penjahit_id');
+    }
+
     public function getFoto()
     {
         if ($this->hasRole('penjahit')) {

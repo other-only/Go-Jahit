@@ -24,6 +24,11 @@ class Order extends Model
         return $this->belongsTo(ProductDetail::class, 'product_detail_id');
     }
 
+    public function chat()
+    {
+        return $this->hasOne(Conversation::class)->where('type', 'order');
+    }
+
     public function getBuktiBayar()
     {
         return Storage::url('bukti_pembayaran/' . $this->bukti_pembayaran);
