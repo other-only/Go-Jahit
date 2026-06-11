@@ -8,6 +8,10 @@ class Conversation extends Model
 {
     protected $fillable = ['type', 'order_id', 'customer_id', 'penjahit_id', 'last_message_at'];
 
+    protected $casts = [
+        'last_message_at' => 'datetime',
+    ];
+
     public function order()
     {
         return $this->belongsTo(Order::class);
