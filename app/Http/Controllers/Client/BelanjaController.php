@@ -27,13 +27,14 @@ class BelanjaController extends Controller
             ->when($lat && $lng, function ($query) use ($lat, $lng) {
                 $query->select('*')
                     ->selectRaw(
-                        '(6371 * acos(cos(radians(?)) * cos(radians(latitude))
+                        'CASE WHEN latitude IS NOT NULL AND longitude IS NOT NULL
+                        THEN (6371 * acos(cos(radians(?)) * cos(radians(latitude))
                         * cos(radians(longitude) - radians(?)) + sin(radians(?))
-                        * sin(radians(latitude)))) AS distance',
+                        * sin(radians(latitude))))
+                        ELSE NULL END AS distance',
                         [$lat, $lng, $lat]
                     )
-                    ->having('distance', '<', 50)
-                    ->orderBy('distance');
+                    ->orderByRaw('distance ASC NULLS LAST');
             })
             ->paginate(12);
 
