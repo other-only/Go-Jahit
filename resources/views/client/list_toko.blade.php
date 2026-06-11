@@ -43,7 +43,7 @@
     @endif
 
     <div id="store-selection" class="row mb-4">
-        @forelse ($tokos as $toko)
+        @forelse ($paginated as $toko)
             <div class="col-md-4 mb-4">
                 <div class="card store-card h-100">
                     <div class="card-header bg-white py-3">
@@ -103,9 +103,9 @@
         @endforelse
     </div>
 
-    @if ($tokos->hasPages())
+    @if ($paginated->hasPages())
         <div class="d-flex justify-content-center">
-            {{ $tokos->links() }}
+            {{ $paginated->links() }}
         </div>
     @endif
 @endsection

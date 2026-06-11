@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Toko;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class BelanjaController extends Controller
 {
@@ -16,29 +16,59 @@ class BelanjaController extends Controller
         $lat = $request->get('lat');
         $lng = $request->get('lng');
 
-        $tokos = Toko::has('produks')->has('details')
+        $query = Toko::has('produks')->has('details')
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('nama_toko', 'like', "%{$search}%")
                       ->orWhere('alamat', 'like', "%{$search}%")
                       ->orWhere('deskripsi', 'like', "%{$search}%");
                 });
-            })
-            ->when($lat && $lng, function ($query) use ($lat, $lng) {
-                $query->select('*')
-                    ->selectRaw(
-                        'CASE WHEN latitude IS NOT NULL AND longitude IS NOT NULL
-                        THEN (6371 * acos(cos(radians(?)) * cos(radians(latitude))
-                        * cos(radians(longitude) - radians(?)) + sin(radians(?))
-                        * sin(radians(latitude))))
-                        ELSE NULL END AS distance',
-                        [$lat, $lng, $lat]
-                    )
-                    ->orderByRaw('distance ASC NULLS LAST');
-            })
-            ->paginate(12);
+            });
 
-        return view('client.list_toko', compact('tokos', 'search', 'lat', 'lng'));
+        $tokos = $query->get();
+
+        if ($lat && $lng) {
+            foreach ($tokos as $toko) {
+                if ($toko->latitude && $toko->longitude) {
+                    $toko->distance = $this->haversine(
+                        $lat, $lng,
+                        $toko->latitude, $toko->longitude
+                    );
+                } else {
+                    $toko->distance = null;
+                }
+            }
+
+            $tokos = $tokos->sortBy(function ($t) {
+                return $t->distance ?? PHP_FLOAT_MAX;
+            })->values();
+        }
+
+        // Manual pagination
+        $perPage = 12;
+        $page = $request->get('page', 1);
+        $total = $tokos->count();
+        $paginated = new LengthAwarePaginator(
+            $tokos->forPage($page, $perPage),
+            $total,
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return view('client.list_toko', compact('paginated', 'search', 'lat', 'lng'));
+    }
+
+    private function haversine($lat1, $lng1, $lat2, $lng2)
+    {
+        $earthRadius = 6371;
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLng = deg2rad($lng2 - $lng1);
+        $a = sin($dLat / 2) * sin($dLat / 2) +
+             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+             sin($dLng / 2) * sin($dLng / 2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        return $earthRadius * $c;
     }
 
     public function order(Request $request, Toko $toko)

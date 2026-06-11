@@ -10,8 +10,8 @@ class Toko extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'latitude' => 'decimal:7',
-        'longitude' => 'decimal:7',
+        'latitude' => 'float',
+        'longitude' => 'float',
     ];
 
     public function getLogo()
