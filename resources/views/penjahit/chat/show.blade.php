@@ -1,6 +1,8 @@
 @extends('panels.penjahit-master')
 
-@section('title', 'Chat - {{ $conversation->customer->name }}')
+@section('title')
+    Chat - {{ $conversation->customer->name }}
+@endsection
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="row justify-content-center">

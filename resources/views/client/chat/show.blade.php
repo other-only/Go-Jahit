@@ -1,6 +1,8 @@
 @extends('client.master')
 
-@section('title', 'Chat - {{ $conversation->penjahit->name }}')
+@section('title')
+    Chat - {{ $conversation->penjahit->name }}
+@endsection
 @section('content')
 <div class="container py-4" style="max-width: 800px;">
     <!-- Header -->
