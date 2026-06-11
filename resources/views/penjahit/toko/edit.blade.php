@@ -90,6 +90,12 @@
                                 <div class="col-sm-10">
                                     <textarea class="form-control @error('alamat') is-invalid @enderror" id="alamat" name="alamat" rows="3"
                                         placeholder="Alamat lengkap toko">{{ old('alamat', $toko->alamat) }}</textarea>
+                                    <div class="mt-2">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="detectLocation()">
+                                            <i class="bx bx-current-location"></i> Deteksi Lokasi dari Alamat
+                                        </button>
+                                        <small class="text-muted ms-2" id="geocode-status"></small>
+                                    </div>
                                     @error('alamat')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -119,11 +125,9 @@
                                         </div>
                                     </div>
                                     <div class="form-text">
-                                        Koordinat lokasi toko. Biarkan kosong jika tidak tahu,
-                                        atau gunakan <a href="https://www.google.com/maps" target="_blank">Google Maps</a>
-                                        untuk mendapatkannya.
+                                        Koordinat lokasi toko. Bisa diisi otomatis via tombol "Deteksi Lokasi" atau manual.
                                         @if(!$toko->latitude || !$toko->longitude)
-                                            <span class="text-warning fw-semibold">⚠️ Belum diisi — toko tidak akan muncul di pencarian terdekat.</span>
+                                            <br><span class="text-warning fw-semibold">⚠️ Belum diisi — toko tidak akan muncul di pencarian terdekat.</span>
                                         @endif
                                     </div>
                                 </div>
@@ -254,6 +258,36 @@
             document.getElementById('uploadedAvatar').src = originalLogo;
             document.getElementById('upload').value = '';
             document.getElementById('preview-container').style.display = 'none';
+        }
+
+        // Deteksi lokasi otomatis dari alamat via Nominatim
+        function detectLocation() {
+            let alamat = document.getElementById('alamat').value.trim();
+            let status = document.getElementById('geocode-status');
+
+            if (!alamat) {
+                status.innerHTML = '<span class="text-danger">⚠️ Isi alamat dulu.</span>';
+                return;
+            }
+
+            status.innerHTML = '🔍 Mencari lokasi...';
+
+            fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(alamat) + '&format=json&limit=1&countrycodes=id', {
+                headers: { 'User-Agent': 'GoJahit/1.0' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data && data[0]) {
+                    document.getElementById('latitude').value = data[0].lat;
+                    document.getElementById('longitude').value = data[0].lon;
+                    status.innerHTML = '<span class="text-success">✅ Lokasi ditemukan!</span>';
+                } else {
+                    status.innerHTML = '<span class="text-danger">❌ Alamat tidak ditemukan.</span>';
+                }
+            })
+            .catch(err => {
+                status.innerHTML = '<span class="text-danger">❌ Gagal menghubungi server.</span>';
+            });
         }
     </script>
 @endpush
