@@ -46,4 +46,32 @@ class TokoController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
+
+    public function geocode(Request $request)
+    {
+        $request->validate(['alamat' => 'required|string|max:500']);
+
+        $url = 'https://nominatim.openstreetmap.org/search?q=' . urlencode($request->alamat) . '&format=json&limit=1&countrycodes=id';
+
+        $context = stream_context_create([
+            'http' => ['header' => "User-Agent: GoJahit/1.0\r\n"]
+        ]);
+
+        $response = @file_get_contents($url, false, $context);
+
+        if ($response === false) {
+            return response()->json(['error' => 'Gagal menghubungi server peta.'], 500);
+        }
+
+        $data = json_decode($response, true);
+
+        if (!empty($data[0])) {
+            return response()->json([
+                'latitude' => $data[0]['lat'],
+                'longitude' => $data[0]['lon'],
+            ]);
+        }
+
+        return response()->json(['error' => 'Alamat tidak ditemukan.'], 404);
+    }
 }

@@ -260,10 +260,11 @@
             document.getElementById('preview-container').style.display = 'none';
         }
 
-        // Deteksi lokasi otomatis dari alamat via Nominatim
+        // Deteksi lokasi otomatis dari alamat via server
         function detectLocation() {
             let alamat = document.getElementById('alamat').value.trim();
             let status = document.getElementById('geocode-status');
+            let csrf = document.querySelector('input[name="_token"]').value;
 
             if (!alamat) {
                 status.innerHTML = '<span class="text-danger">⚠️ Isi alamat dulu.</span>';
@@ -272,17 +273,22 @@
 
             status.innerHTML = '🔍 Mencari lokasi...';
 
-            fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(alamat) + '&format=json&limit=1&countrycodes=id', {
-                headers: { 'User-Agent': 'GoJahit/1.0' }
+            fetch('{{ route("penjahit.toko.geocode") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRF-TOKEN': csrf
+                },
+                body: 'alamat=' + encodeURIComponent(alamat)
             })
             .then(res => res.json())
             .then(data => {
-                if (data && data[0]) {
-                    document.getElementById('latitude').value = data[0].lat;
-                    document.getElementById('longitude').value = data[0].lon;
+                if (data.latitude && data.longitude) {
+                    document.getElementById('latitude').value = data.latitude;
+                    document.getElementById('longitude').value = data.longitude;
                     status.innerHTML = '<span class="text-success">✅ Lokasi ditemukan!</span>';
                 } else {
-                    status.innerHTML = '<span class="text-danger">❌ Alamat tidak ditemukan.</span>';
+                    status.innerHTML = '<span class="text-danger">❌ ' + (data.error || 'Alamat tidak ditemukan.') + '</span>';
                 }
             })
             .catch(err => {

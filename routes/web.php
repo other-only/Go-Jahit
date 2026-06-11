@@ -96,6 +96,7 @@ Route::group(['prefix' => 'penjahit', 'middleware' => ['auth', 'role:penjahit']]
         Route::get('', [PenjahitTokoController::class, 'index'])->name('penjahit.toko.index');
         Route::get('edit', [PenjahitTokoController::class, 'edit'])->name('penjahit.toko.edit');
         Route::post('update', [PenjahitTokoController::class, 'update'])->name('penjahit.toko.update');
+        Route::post('geocode', [PenjahitTokoController::class, 'geocode'])->name('penjahit.toko.geocode');
     });
 
     Route::group(['prefix' => 'produk', 'middleware' => 'has.toko'], function () {
