@@ -7,11 +7,13 @@ use App\Http\Controllers\Admin\PenjahitController;
 use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\Admin\TokoController;
 use App\Http\Controllers\Client\BelanjaController;
+use App\Http\Controllers\Client\ChatController as ClientChatController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Penjahit\DashboardController as PenjahitDashboardController;
 use App\Http\Controllers\Penjahit\TokoController as PenjahitTokoController;
 use App\Http\Controllers\Penjahit\ProdukController as PenjahitProdukController;
 use App\Http\Controllers\Penjahit\DetailController as PenjahitDetailController;
+use App\Http\Controllers\Penjahit\ChatController as PenjahitChatController;
 use App\Http\Controllers\Penjahit\PesananController as PenjahitPesananController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +38,16 @@ Route::group(['prefix' => 'client'], function () {
     Route::post('track/order', [BelanjaController::class, 'trackOrderPost'])->name('client.track.order.post');
     Route::get('orders', [BelanjaController::class, 'historyOrder'])->name('client.history.order');
     Route::post('cancel/order', [BelanjaController::class, 'cancelOrder'])->name('client.cancel.order');
+
+    // Client chat
+    Route::group(['middleware' => ['auth', 'role:pelanggan']], function () {
+        Route::get('chat', [ClientChatController::class, 'index'])->name('client.chat.index');
+        Route::get('chat/{conversation}', [ClientChatController::class, 'show'])->name('client.chat.show');
+        Route::get('chat/{conversation}/messages', [ClientChatController::class, 'fetchMessages'])->name('client.chat.messages');
+        Route::post('chat/{conversation}/send', [ClientChatController::class, 'send'])->name('client.chat.send');
+        Route::get('chat/start/{penjahit}', [ClientChatController::class, 'startGeneral'])->name('client.chat.start');
+        Route::get('order/{order}/chat', [ClientChatController::class, 'startOrder'])->name('client.chat.order');
+    });
 });
 
 // Admin routes — only for admin role
@@ -108,5 +120,13 @@ Route::group(['prefix' => 'penjahit', 'middleware' => ['auth', 'role:penjahit']]
         Route::get('detail/{order}', [PenjahitPesananController::class, 'detail'])->name('penjahit.pesanan.detail');
         Route::post('update/{order}/status', [PenjahitPesananController::class, 'status'])->name('penjahit.pesanan.status');
         Route::post('update/{order}/confirm', [PenjahitPesananController::class, 'confirm'])->name('penjahit.pesanan.confirm');
+    });
+
+    // Penjahit chat
+    Route::group(['middleware' => 'has.toko'], function () {
+        Route::get('chat', [PenjahitChatController::class, 'index'])->name('penjahit.chat.index');
+        Route::get('chat/{conversation}', [PenjahitChatController::class, 'show'])->name('penjahit.chat.show');
+        Route::get('chat/{conversation}/messages', [PenjahitChatController::class, 'fetchMessages'])->name('penjahit.chat.messages');
+        Route::post('chat/{conversation}/send', [PenjahitChatController::class, 'send'])->name('penjahit.chat.send');
     });
 });
