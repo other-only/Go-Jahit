@@ -49,13 +49,36 @@ class TokoController extends Controller
 
     public function geocode(Request $request)
     {
-        $request->validate(['alamat' => 'required|string|max:500']);
-
-        $url = 'https://nominatim.openstreetmap.org/search?q=' . urlencode($request->alamat) . '&format=json&limit=1&countrycodes=id';
-
         $context = stream_context_create([
             'http' => ['header' => "User-Agent: GoJahit/1.0\r\n"]
         ]);
+
+        // Reverse geocode: lat/lng → alamat
+        if ($request->has('lat') && $request->has('lng')) {
+            $url = 'https://nominatim.openstreetmap.org/reverse?lat=' . urlencode($request->lat) . '&lon=' . urlencode($request->lng) . '&format=json';
+
+            $response = @file_get_contents($url, false, $context);
+            if ($response === false) {
+                return response()->json(['error' => 'Gagal menghubungi server peta.'], 500);
+            }
+
+            $data = json_decode($response, true);
+
+            if (!empty($data['display_name'])) {
+                return response()->json([
+                    'latitude' => $data['lat'],
+                    'longitude' => $data['lon'],
+                    'alamat' => $data['display_name'],
+                ]);
+            }
+
+            return response()->json(['error' => 'Lokasi tidak ditemukan.'], 404);
+        }
+
+        // Forward geocode: alamat → lat/lng
+        $request->validate(['alamat' => 'required|string|max:500']);
+
+        $url = 'https://nominatim.openstreetmap.org/search?q=' . urlencode($request->alamat) . '&format=json&limit=1&countrycodes=id';
 
         $response = @file_get_contents($url, false, $context);
 

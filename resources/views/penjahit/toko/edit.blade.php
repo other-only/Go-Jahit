@@ -260,9 +260,10 @@
             document.getElementById('preview-container').style.display = 'none';
         }
 
-        // Deteksi lokasi otomatis via GPS
+        // Deteksi lokasi via GPS + reverse geocode (isi alamat otomatis)
         function detectLocation() {
             let status = document.getElementById('geocode-status');
+            let csrf = document.querySelector('input[name="_token"]').value;
 
             if (!navigator.geolocation) {
                 status.innerHTML = '<span class="text-danger">❌ Browser tidak mendukung GPS.</span>';
@@ -273,9 +274,33 @@
 
             navigator.geolocation.getCurrentPosition(
                 function(pos) {
-                    document.getElementById('latitude').value = pos.coords.latitude;
-                    document.getElementById('longitude').value = pos.coords.longitude;
-                    status.innerHTML = '<span class="text-success">✅ Lokasi terdeteksi!</span>';
+                    let lat = pos.coords.latitude;
+                    let lng = pos.coords.longitude;
+
+                    // Kirim ke server buat reverse geocode
+                    fetch('{{ route("penjahit.toko.geocode") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRF-TOKEN': csrf
+                        },
+                        body: 'lat=' + lat + '&lng=' + lng
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.alamat) {
+                            document.getElementById('alamat').value = data.alamat;
+                        }
+                        document.getElementById('latitude').value = data.latitude || lat;
+                        document.getElementById('longitude').value = data.longitude || lng;
+                        status.innerHTML = '<span class="text-success">✅ Lokasi & alamat terisi!</span>';
+                    })
+                    .catch(function() {
+                        // Fallback: isi lat/lng aja
+                        document.getElementById('latitude').value = lat;
+                        document.getElementById('longitude').value = lng;
+                        status.innerHTML = '<span class="text-warning">⚠️ Alamat tidak terdeteksi, lat/lng terisi.</span>';
+                    });
                 },
                 function() {
                     status.innerHTML = '<span class="text-danger">❌ Gagal mendapat lokasi. Izinkan akses GPS atau input manual.</span>';
