@@ -30,6 +30,7 @@ Route::get('logout', [LoginController::class, 'logout'])->middleware('auth')->na
 
 Route::group(['prefix' => 'client'], function () {
     Route::get('belanja', [BelanjaController::class, 'index'])->name('client.belanja');
+    Route::post('geocode', [BelanjaController::class, 'geocode'])->name('client.geocode');
     Route::get('order/{toko}', [BelanjaController::class, 'order'])->name('client.order');
     Route::post('order/{toko}', [BelanjaController::class, 'orderPost'])->name('client.order.post');
     Route::get('order/{order}/success', [BelanjaController::class, 'orderSuccess'])->name('client.order.success');

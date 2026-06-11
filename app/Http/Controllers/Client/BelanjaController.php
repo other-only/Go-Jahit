@@ -13,6 +13,9 @@ class BelanjaController extends Controller
     public function index(Request $request)
     {
         $search = $request->get('search');
+        $lat = $request->get('lat');
+        $lng = $request->get('lng');
+
         $tokos = Toko::has('produks')->has('details')
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -21,8 +24,20 @@ class BelanjaController extends Controller
                       ->orWhere('deskripsi', 'like', "%{$search}%");
                 });
             })
+            ->when($lat && $lng, function ($query) use ($lat, $lng) {
+                $query->select('*')
+                    ->selectRaw(
+                        '(6371 * acos(cos(radians(?)) * cos(radians(latitude))
+                        * cos(radians(longitude) - radians(?)) + sin(radians(?))
+                        * sin(radians(latitude)))) AS distance',
+                        [$lat, $lng, $lat]
+                    )
+                    ->having('distance', '<', 50)
+                    ->orderBy('distance');
+            })
             ->paginate(12);
-        return view('client.list_toko', compact('tokos', 'search'));
+
+        return view('client.list_toko', compact('tokos', 'search', 'lat', 'lng'));
     }
 
     public function order(Request $request, Toko $toko)
@@ -104,5 +119,29 @@ class BelanjaController extends Controller
             DB::rollBack();
             return back()->with('error', $e->getMessage());
         }
+    }
+
+    public function geocode(Request $request)
+    {
+        $request->validate(['alamat' => 'required|string|max:500']);
+
+        $url = 'https://nominatim.openstreetmap.org/search?q=' . urlencode($request->alamat) . '&format=json&limit=1&countrycodes=id';
+
+        $context = stream_context_create([
+            'http' => [
+                'header' => "User-Agent: GoJahit/1.0\r\n"
+            ]
+        ]);
+
+        $response = file_get_contents($url, false, $context);
+        $data = json_decode($response, true);
+
+        if (!empty($data[0])) {
+            $lat = $data[0]['lat'];
+            $lng = $data[0]['lon'];
+            return redirect()->route('client.belanja', ['lat' => $lat, 'lng' => $lng]);
+        }
+
+        return redirect()->route('client.belanja')->with('error', 'Alamat tidak ditemukan. Silakan coba alamat lain.');
     }
 }
