@@ -25,6 +25,23 @@
         </div>
     </div>
 
+    @if(!request()->has('lat'))
+        <div id="manual-location" class="row mb-4" style="display: none;">
+            <div class="col-md-8 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="mb-3">📍 Masukkan alamat Anda untuk mencari toko terdekat</h6>
+                        <form action="{{ route('client.geocode') }}" method="POST" class="input-group">
+                            @csrf
+                            <input type="text" name="alamat" class="form-control" placeholder="Contoh: Jl. Merdeka No. 1, Jakarta" required>
+                            <button class="btn btn-primary" type="submit">Cari</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <div id="store-selection" class="row mb-4">
         @forelse ($tokos as $toko)
             <div class="col-md-4 mb-4">
@@ -45,6 +62,18 @@
                                 <i class="bi bi-whatsapp text-primary me-2"></i>
                                 <p class="text-muted mb-0 small">{{ $toko->no_wa }}</p>
                             </div>
+                            @if(isset($toko->distance))
+                                <div class="d-flex align-items-center mt-2">
+                                    <i class="bi bi-geo-alt text-primary me-2"></i>
+                                    <small class="text-muted">
+                                        @if($toko->distance < 1)
+                                            {{ round($toko->distance * 1000) }} m
+                                        @else
+                                            {{ number_format($toko->distance, 1) }} km
+                                        @endif
+                                    </small>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     <div class="card-footer bg-white border-top-0 text-center">
