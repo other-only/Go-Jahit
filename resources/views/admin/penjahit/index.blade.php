@@ -22,6 +22,7 @@
                             <th>Email</th>
                             <th>Nama Toko</th>
                             <th>Alamat Toko</th>
+                            <th>Lokasi</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
@@ -31,6 +32,13 @@
                                 <td>{{ $penjahit->email }}</td>
                                 <td>{{ $penjahit->toko->nama_toko }}</td>
                                 <td>{{ $penjahit->toko->alamat }}</td>
+                                <td>
+                                    @if($penjahit->toko->latitude && $penjahit->toko->longitude)
+                                        <span class="badge bg-label-success">Terverifikasi</span>
+                                    @else
+                                        <span class="badge bg-label-warning">Belum set lokasi</span>
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
