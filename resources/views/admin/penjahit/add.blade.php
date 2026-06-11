@@ -38,7 +38,7 @@
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control @error('name') is-invalid @enderror"
                                         id="name" name="name" value="{{ old('name') }}" placeholder="Nama Lengkap"
-                                        required />
+                                        />
                                     @error('name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -51,7 +51,7 @@
                                 <div class="col-sm-10">
                                     <input type="email" class="form-control @error('email') is-invalid @enderror"
                                         id="email" name="email" value="{{ old('email') }}"
-                                        placeholder="email@example.com" required />
+                                        placeholder="email@example.com" />
                                     @error('email')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -65,7 +65,7 @@
                                     <div class="input-group input-group-merge">
                                         <input type="password" id="password"
                                             class="form-control @error('password') is-invalid @enderror" name="password"
-                                            placeholder="••••••" aria-describedby="password" required />
+                                            placeholder="••••••" aria-describedby="password" />
                                         <span class="input-group-text cursor-pointer" onclick="togglePassword('password')">
                                             <i class="bx bx-hide"></i>
                                         </span>
@@ -85,7 +85,7 @@
                                     <div class="input-group input-group-merge">
                                         <input type="password" id="password_confirmation" class="form-control"
                                             name="password_confirmation" placeholder="••••••"
-                                            aria-describedby="password_confirmation" required />
+                                            aria-describedby="password_confirmation" />
                                         <span class="input-group-text cursor-pointer"
                                             onclick="togglePassword('password_confirmation')">
                                             <i class="bx bx-hide"></i>
@@ -112,8 +112,7 @@
                                                 <span class="d-none d-sm-block">Upload logo</span>
                                                 <i class="bx bx-upload d-block d-sm-none"></i>
                                                 <input type="file" id="upload" name="foto_toko"
-                                                    class="account-file-input" hidden accept="image/png, image/jpeg"
-                                                    required />
+                                                    class="account-file-input" hidden accept="image/png, image/jpeg" />
                                             </label>
                                             <button type="button" class="btn btn-outline-secondary mb-2"
                                                 onclick="resetFoto()">
@@ -165,7 +164,7 @@
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control @error('nama_toko') is-invalid @enderror"
                                         id="nama_toko" name="nama_toko" value="{{ old('nama_toko') }}"
-                                        placeholder="Nama Toko" required />
+                                        placeholder="Nama Toko" />
                                     @error('nama_toko')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -177,7 +176,7 @@
                                 <label class="col-sm-2 col-form-label" for="alamat_toko">Alamat Toko</label>
                                 <div class="col-sm-10">
                                     <textarea class="form-control @error('alamat_toko') is-invalid @enderror" id="alamat_toko" name="alamat_toko"
-                                        rows="3" placeholder="Alamat lengkap toko" required>{{ old('alamat_toko') }}</textarea>
+                                        rows="3" placeholder="Alamat lengkap toko">{{ old('alamat_toko') }}</textarea>
                                     @error('alamat_toko')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -202,7 +201,7 @@
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control @error('no_wa') is-invalid @enderror"
                                         id="no_wa" name="no_wa" value="{{ old('no_wa') }}"
-                                        placeholder="Contoh: 081234567890" required />
+                                        placeholder="Contoh: 081234567890" />
                                     @error('no_wa')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -215,7 +214,7 @@
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control @error('bank') is-invalid @enderror"
                                         id="bank" name="bank" value="{{ old('bank') }}"
-                                        placeholder="Contoh: BCA, BNI, Mandiri, dll" required />
+                                        placeholder="Contoh: BCA, BNI, Mandiri, dll" />
                                     @error('bank')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -228,7 +227,7 @@
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control @error('no_rekening') is-invalid @enderror"
                                         id="no_rekening" name="no_rekening" value="{{ old('no_rekening') }}"
-                                        placeholder="Nomor rekening bank" required />
+                                        placeholder="Nomor rekening bank" />
                                     @error('no_rekening')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -241,7 +240,7 @@
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control @error('atas_nama') is-invalid @enderror"
                                         id="atas_nama" name="atas_nama" value="{{ old('atas_nama') }}"
-                                        placeholder="Nama pemilik rekening" required />
+                                        placeholder="Nama pemilik rekening" />
                                     @error('atas_nama')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
