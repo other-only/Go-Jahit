@@ -15,7 +15,6 @@ RUN apk add --no-cache \
     php82-fileinfo \
     php82-iconv \
     php82-json \
-    php82-mbstring \
     php82-mysqli \
     php82-openssl \
     php82-phar \
@@ -33,6 +32,8 @@ RUN apk add --no-cache \
     supervisor \
     curl \
     unzip
+
+RUN ln -s /usr/bin/php82 /usr/local/bin/php
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
