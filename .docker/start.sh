@@ -26,6 +26,7 @@ if [ -z "$APP_KEY" ]; then
     php artisan key:generate --force
 fi
 
+php artisan config:clear
 php artisan storage:link --force
 php artisan migrate --force
 
