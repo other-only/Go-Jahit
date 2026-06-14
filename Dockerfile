@@ -55,9 +55,9 @@ RUN echo "memory_limit=256M" > /etc/php82/conf.d/app.ini \
     && echo "opcache.memory_consumption=128" >> /etc/php82/conf.d/app.ini \
     && echo "opcache.max_accelerated_files=10000" >> /etc/php82/conf.d/app.ini
 
-RUN adduser -D -H -h /var/www/html -s /sbin/nologin www-data 2>/dev/null || true
+RUN adduser -D -H -h /var/www/html -s /sbin/nologin www-data 2>/dev/null; adduser -D -H -s /sbin/nologin nobody 2>/dev/null; true
 
-RUN chmod -R 777 storage bootstrap/cache
+RUN rm -f bootstrap/cache/packages.php bootstrap/cache/services.php && chmod -R 777 storage bootstrap/cache
 
 COPY .docker/nginx.conf /etc/nginx/http.d/default.conf
 COPY .docker/php-fpm-pool.conf /etc/php82/php-fpm.d/zz-app.conf
