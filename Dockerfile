@@ -11,9 +11,11 @@ WORKDIR /var/www/html
 
 COPY composer.json composer.lock ./
 
-RUN composer install --prefer-dist --optimize-autoloader --no-interaction --no-dev
+RUN composer install --prefer-dist --no-interaction --no-dev --no-scripts --no-autoloader
 
 COPY . .
+
+RUN composer install --prefer-dist --optimize-autoloader --no-interaction --no-dev --no-scripts
 
 RUN echo "memory_limit=256M" > /usr/local/etc/php/conf.d/app.ini \
     && echo "upload_max_filesize=64M" >> /usr/local/etc/php/conf.d/app.ini \
