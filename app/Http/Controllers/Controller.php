@@ -11,7 +11,7 @@ abstract class Controller
     public function uploadImage($image, $path)
     {
         $filename = Str::slug($image->getClientOriginalName(), '_') . '-' . time() . '.' . $image->getClientOriginalExtension();
-        $image->storeAs($path, $filename);
+        $image->storeAs($path, $filename, 'public');
         return $filename;
     }
 }
