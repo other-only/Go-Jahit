@@ -1,0 +1,17 @@
+{
+  "name": "Go-Jahit",
+  "type": "docker",
+  "description": "Go-Jahit — Online Tailoring Platform",
+  "baseImage": "php:8.2-fpm-alpine",
+  "buildPack": "docker",
+  "ports": [80],
+  "storage": ["/var/www/html/storage/app"],
+  "environments": {
+    "APP_ENV": "production",
+    "APP_DEBUG": "false",
+    "DB_CONNECTION": "mysql",
+    "SESSION_DRIVER": "database",
+    "QUEUE_CONNECTION": "database",
+    "CACHE_STORE": "database"
+  }
+}
