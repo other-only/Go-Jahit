@@ -12,8 +12,7 @@ RUN composer install --prefer-dist --optimize-autoloader --no-interaction --no-d
 
 RUN chmod -R 777 storage bootstrap/cache
 
-COPY .docker/start.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
+COPY --chown=www-data:www-data .docker/start.sh /usr/local/bin/start.sh
 
 EXPOSE 80 443
 
