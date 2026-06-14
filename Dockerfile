@@ -25,8 +25,8 @@ RUN echo "memory_limit=256M" > /usr/local/etc/php/conf.d/app.ini \
     && echo "opcache.memory_consumption=128" >> /usr/local/etc/php/conf.d/app.ini \
     && echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/app.ini
 
-RUN chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache public
+RUN chown -R www-data:www-data storage bootstrap/cache database \
+    && chmod -R 775 storage bootstrap/cache database public
 
 COPY .docker/nginx.conf /etc/nginx/http.d/default.conf
 COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
