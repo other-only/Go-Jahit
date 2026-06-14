@@ -2,16 +2,16 @@
 
 set -e
 
-# Generate APP_KEY if not set
-if [ -z "$APP_KEY" ]; then
-    php artisan key:generate --force
+if [ ! -f .env ]; then
+    cp .env.example .env 2>/dev/null || true
 fi
 
-# Create storage link
+if [ -z "$APP_KEY" ]; then
+    php artisan key:generate --force 2>/dev/null || true
+fi
+
 php artisan storage:link --force 2>/dev/null || true
 
-# Run migrations
 php artisan migrate --force
 
-# Start supervisor
 exec supervisord -c /etc/supervisor/conf.d/supervisord.conf
