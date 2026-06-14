@@ -13,7 +13,7 @@ COPY composer.json composer.lock ./
 
 RUN composer install --prefer-dist --no-interaction --no-dev --no-scripts --no-autoloader
 
-COPY . .
+COPY --chown=www-data:www-data . .
 
 RUN composer install --prefer-dist --optimize-autoloader --no-interaction --no-dev --no-scripts
 
@@ -25,8 +25,7 @@ RUN echo "memory_limit=256M" > /usr/local/etc/php/conf.d/app.ini \
     && echo "opcache.memory_consumption=128" >> /usr/local/etc/php/conf.d/app.ini \
     && echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/app.ini
 
-RUN chown -R www-data:www-data storage bootstrap/cache database \
-    && chmod -R 775 storage bootstrap/cache database public
+RUN chmod -R 777 storage bootstrap/cache database
 
 COPY .docker/nginx.conf /etc/nginx/http.d/default.conf
 COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
