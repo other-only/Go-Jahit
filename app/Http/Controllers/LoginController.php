@@ -29,7 +29,7 @@ class LoginController extends Controller
             }
             return redirect()->route('admin.dashboard');
         }
-        return back()->withInput();
+        return back()->withInput()->withErrors(['email' => 'Email atau password salah.']);
     }
 
     public function logout(Request $request)

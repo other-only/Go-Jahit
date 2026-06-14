@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Toko;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class BelanjaController extends Controller
 {
@@ -81,6 +82,17 @@ class BelanjaController extends Controller
 
     public function orderPost(Request $request, Toko $toko)
     {
+        $request->validate([
+            'productType' => 'required',
+            'fabricType' => 'required',
+            'clothing_quantity' => 'required|numeric|min:1',
+            'name' => 'required|string|max:255',
+            'address' => 'required|string',
+            'phone' => 'required|string|max:15',
+            'paymentMethod' => 'required|in:cod,transfer',
+            'total_price' => 'required|numeric',
+        ]);
+
         try {
             DB::beginTransaction();
             $kode_booking = 'BK-' . mt_rand(10000000, 99999999);
@@ -128,6 +140,11 @@ class BelanjaController extends Controller
     public function trackOrderPost(Request $request)
     {
         $order = Order::where('kode_order', $request->kode_order)->first();
+
+        if (!$order) {
+            return redirect()->route('client.track.order')->with('error', 'Kode booking tidak ditemukan.');
+        }
+
         return view('client.order_status', compact('order'));
     }
 
@@ -142,6 +159,17 @@ class BelanjaController extends Controller
         try {
             DB::beginTransaction();
             $order = Order::where('kode_order', $request->kode_order)->first();
+
+            if (!$order) {
+                DB::rollBack();
+                return back()->with('error', 'Order tidak ditemukan.');
+            }
+
+            if (in_array($order->status, ['selesai', 'batal'])) {
+                DB::rollBack();
+                return back()->with('error', 'Order dengan status ' . $order->getStatusOrder() . ' tidak dapat dibatalkan.');
+            }
+
             $order->status = 'batal';
             $order->save();
             DB::commit();
