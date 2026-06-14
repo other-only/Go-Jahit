@@ -4,8 +4,8 @@ if [ ! -f .env ]; then
     cp .env.example .env
 fi
 
-chmod -R 777 storage bootstrap/cache 2>/dev/null
 mkdir -p storage/logs storage/framework/views storage/framework/cache storage/framework/sessions storage/framework/testing storage/app/private/produk storage/app/private/toko storage/app/private/detail storage/app/public/toko storage/app/public/produk storage/app/public/detail storage/app/public/bukti_pembayaran 2>/dev/null
+chmod -R 777 storage bootstrap/cache 2>/dev/null
 touch storage/logs/laravel.log 2>/dev/null
 chmod 666 storage/logs/laravel.log 2>/dev/null
 
