@@ -30,7 +30,7 @@ class TokoController extends Controller
 
         try {
             $toko->update([
-                'logo' => $request->logo ? $this->uploadImage($request->file('logo'), 'toko') : $toko->logo,
+                'logo' => $request->hasFile('logo') ? $this->uploadImage($request->file('logo'), 'toko') : $toko->logo,
                 'nama_toko' => $request->nama_toko,
                 'deskripsi' => $request->deskripsi,
                 'alamat' => $request->alamat,
