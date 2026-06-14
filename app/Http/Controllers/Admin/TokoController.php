@@ -24,13 +24,17 @@ class TokoController extends Controller
     public function update(EditRequest $request, Toko $toko)
     {
         try {
-            Log::error('TOKO UPDATE DEBUG: hasFile(logo)=' . ($request->hasFile('logo') ? 'true' : 'false') . ' | all=' . json_encode($request->all()));
             if ($request->hasFile('logo')) {
-                Log::error('FILE: name=' . $request->file('logo')->getClientOriginalName() . ' size=' . $request->file('logo')->getSize() . ' mime=' . $request->file('logo')->getMimeType());
+                $file = $request->file('logo');
+                $filename = $this->uploadImage($file, 'toko');
+                Log::error('UPLOAD: filename=' . $filename . ' | exists=' . (\Illuminate\Support\Facades\Storage::disk('public')->exists('toko/' . $filename) ? 'yes' : 'no'));
+                Log::error('PUBLIC_PATH: ' . storage_path('app/public/toko/' . $filename));
+                $toko->update([
+                    'logo' => $filename,
+                ]);
             }
 
             $toko->update([
-                'logo' => $request->hasFile('logo') ? $this->uploadImage($request->file('logo'), 'toko') : $toko->logo,
                 'nama_toko' => $request->nama_toko,
                 'deskripsi' => $request->deskripsi,
                 'alamat' => $request->alamat,
