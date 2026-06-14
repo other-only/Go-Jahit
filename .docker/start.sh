@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 set -e
 
@@ -30,4 +30,4 @@ php artisan config:clear
 php artisan storage:link --force
 php artisan migrate --force
 
-exec supervisord -c /etc/supervisor/conf.d/supervisord.conf
+exec /init
