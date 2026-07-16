@@ -8,6 +8,7 @@ use App\Models\Toko;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class BelanjaController extends Controller
 {
@@ -82,15 +83,55 @@ class BelanjaController extends Controller
 
     public function orderPost(Request $request, Toko $toko)
     {
-        $request->validate([
-            'productType' => 'required',
-            'fabricType' => 'required',
+        if (!auth()->check()) {
+            return response()->json([
+                'message' => 'Silakan login terlebih dahulu untuk membuat pesanan.',
+            ], 401);
+        }
+
+        $validated = $request->validate([
+            'productType' => [
+                'required',
+                Rule::exists('products', 'id')->where('toko_id', $toko->id),
+            ],
+            'fabricType' => [
+                'required',
+                Rule::exists('product_details', 'id')->where('toko_id', $toko->id),
+            ],
             'clothing_quantity' => 'required|numeric|min:1',
+            'fabric_quantity' => 'required|numeric|min:0.5',
+            'size' => 'required|in:S,M,L,XL,XXL',
             'name' => 'required|string|max:255',
             'address' => 'required|string',
             'phone' => 'required|string|max:15',
             'paymentMethod' => 'required|in:cod,transfer',
-            'total_price' => 'required|numeric',
+            'bukti_transfer' => 'required_if:paymentMethod,transfer|nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'total_price' => 'required|numeric|min:1',
+        ], [
+            'productType.required' => 'Pilih jenis produk.',
+            'productType.exists' => 'Produk yang dipilih tidak tersedia di toko ini.',
+            'fabricType.required' => 'Pilih jenis kain.',
+            'fabricType.exists' => 'Jenis kain yang dipilih tidak tersedia di toko ini.',
+            'clothing_quantity.required' => 'Masukkan jumlah baju.',
+            'clothing_quantity.numeric' => 'Jumlah baju harus berupa angka.',
+            'clothing_quantity.min' => 'Jumlah baju minimal 1.',
+            'fabric_quantity.required' => 'Masukkan jumlah kain.',
+            'fabric_quantity.numeric' => 'Jumlah kain harus berupa angka.',
+            'fabric_quantity.min' => 'Jumlah kain minimal 0.5 meter.',
+            'size.required' => 'Pilih ukuran baju.',
+            'size.in' => 'Ukuran baju tidak valid.',
+            'name.required' => 'Masukkan nama penerima.',
+            'address.required' => 'Masukkan alamat pengiriman.',
+            'phone.required' => 'Masukkan nomor telepon.',
+            'phone.max' => 'Nomor telepon maksimal 15 karakter.',
+            'paymentMethod.required' => 'Pilih metode pembayaran.',
+            'paymentMethod.in' => 'Metode pembayaran tidak valid.',
+            'bukti_transfer.required_if' => 'Upload bukti transfer.',
+            'bukti_transfer.image' => 'Bukti transfer harus berupa gambar.',
+            'bukti_transfer.mimes' => 'Bukti transfer harus berformat JPG, JPEG, atau PNG.',
+            'bukti_transfer.max' => 'Ukuran bukti transfer maksimal 2MB.',
+            'total_price.required' => 'Total harga belum terhitung. Pilih produk dan kain terlebih dahulu.',
+            'total_price.min' => 'Total harga belum terhitung. Pilih produk dan kain terlebih dahulu.',
         ]);
 
         try {
@@ -99,18 +140,18 @@ class BelanjaController extends Controller
             $order = Order::create([
                 'kode_order' => $kode_booking,
                 'toko_id' => $toko->id,
-                'product_id' => $request->productType,
-                'product_detail_id' => $request->fabricType,
-                'total_harga' => $request->total_price,
-                'bayar' => $request->paymentMethod,
-                'jumlah_baju' => $request->clothing_quantity,
-                'jumlah_kain' => $request->fabric_quantity,
-                'ukuran_baju' => $request->size,
-                'nama_penerima' => $request->name,
-                'alamat_penerima' => $request->address,
-                'no_hp_penerima' => $request->phone,
+                'product_id' => $validated['productType'],
+                'product_detail_id' => $validated['fabricType'],
+                'total_harga' => $validated['total_price'],
+                'bayar' => $validated['paymentMethod'],
+                'jumlah_baju' => $validated['clothing_quantity'],
+                'jumlah_kain' => $validated['fabric_quantity'],
+                'ukuran_baju' => $validated['size'],
+                'nama_penerima' => $validated['name'],
+                'alamat_penerima' => $validated['address'],
+                'no_hp_penerima' => $validated['phone'],
                 'pelanggan_id' => auth()->user()->id,
-                'bukti_pembayaran' => $request->paymentMethod == 'transfer' ? $this->uploadImage($request->file('bukti_transfer'), 'bukti_pembayaran') : null,
+                'bukti_pembayaran' => $validated['paymentMethod'] == 'transfer' ? $this->uploadImage($request->file('bukti_transfer'), 'bukti_pembayaran') : null,
             ]);
             DB::commit();
             $url = route('client.order.success', ['order' => $order]);

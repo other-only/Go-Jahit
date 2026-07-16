@@ -8,6 +8,8 @@ use App\Models\ProductDetail;
 use App\Models\Toko;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class BelanjaTest extends TestCase
@@ -205,6 +207,81 @@ class BelanjaTest extends TestCase
         $response = $this->post(route('client.order.post', $toko), []);
 
         $response->assertSessionHasErrors(['productType', 'fabricType', 'name', 'address', 'phone', 'paymentMethod', 'total_price']);
+    }
+
+    public function test_transfer_order_requires_payment_proof()
+    {
+        $pelanggan = User::factory()->create();
+        $pelanggan->assignRole('pelanggan');
+        $this->actingAs($pelanggan);
+
+        $penjahit = User::factory()->create();
+        $penjahit->assignRole('penjahit');
+        $toko = Toko::factory()->create(['penjahit_id' => $penjahit->id]);
+        $product = Product::factory()->create(['toko_id' => $toko->id]);
+        $detail = ProductDetail::factory()->create(['toko_id' => $toko->id]);
+
+        $response = $this->postJson(route('client.order.post', $toko), [
+            'productType' => $product->id,
+            'fabricType' => $detail->id,
+            'clothing_quantity' => 1,
+            'fabric_quantity' => 1,
+            'name' => 'John Doe',
+            'address' => 'Jl. Merdeka No. 1',
+            'phone' => '08123456789',
+            'paymentMethod' => 'transfer',
+            'total_price' => 50000,
+            'size' => 'M',
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['bukti_transfer']);
+    }
+
+    public function test_transfer_order_uploads_payment_proof()
+    {
+        Storage::fake('public');
+
+        $pelanggan = User::factory()->create();
+        $pelanggan->assignRole('pelanggan');
+        $this->actingAs($pelanggan);
+
+        $penjahit = User::factory()->create();
+        $penjahit->assignRole('penjahit');
+        $toko = Toko::factory()->create(['penjahit_id' => $penjahit->id]);
+        $product = Product::factory()->create(['toko_id' => $toko->id]);
+        $detail = ProductDetail::factory()->create(['toko_id' => $toko->id]);
+
+        $response = $this->postJson(route('client.order.post', $toko), [
+            'productType' => $product->id,
+            'fabricType' => $detail->id,
+            'clothing_quantity' => 1,
+            'fabric_quantity' => 1,
+            'name' => 'John Doe',
+            'address' => 'Jl. Merdeka No. 1',
+            'phone' => '08123456789',
+            'paymentMethod' => 'transfer',
+            'bukti_transfer' => UploadedFile::fake()->image('bukti.jpg'),
+            'total_price' => 50000,
+            'size' => 'M',
+        ]);
+
+        $response->assertJson(['status' => true]);
+        $order = Order::first();
+        $this->assertNotNull($order->bukti_pembayaran);
+        Storage::disk('public')->assertExists('bukti_pembayaran/' . $order->bukti_pembayaran);
+    }
+
+    public function test_guest_order_post_returns_login_message()
+    {
+        $penjahit = User::factory()->create();
+        $penjahit->assignRole('penjahit');
+        $toko = Toko::factory()->create(['penjahit_id' => $penjahit->id]);
+
+        $response = $this->postJson(route('client.order.post', $toko), []);
+
+        $response->assertStatus(401);
+        $response->assertJson(['message' => 'Silakan login terlebih dahulu untuk membuat pesanan.']);
     }
 
     public function test_guest_can_search_shops()

@@ -405,6 +405,8 @@
 
             // Submit
             $('#submit-order').click(function() {
+                const submitButton = $(this);
+
                 // Validate
                 const required = {
                     'productType': 'Pilih jenis produk',
@@ -421,9 +423,16 @@
                 $('#error-list').empty();
                 $('.is-invalid').removeClass('is-invalid');
 
+                function showErrors(messages) {
+                    $('#error-list').empty();
+                    messages.forEach(e => $('#error-list').append(`<li>${e}</li>`));
+                    $('#form-errors').removeClass('d-none');
+                    $('html, body').animate({ scrollTop: $('#form-errors').offset().top - 100 }, 200);
+                }
+
                 for (const [field, msg] of Object.entries(required)) {
                     const val = $(`[name="${field}"]:checked, [name="${field}"]`).val();
-                    if (!val || val.trim === '') {
+                    if (!val || String(val).trim() === '') {
                         errors.push(msg);
                         $(`[name="${field}"]`).addClass('is-invalid');
                     }
@@ -442,13 +451,12 @@
                 }
 
                 if (errors.length > 0) {
-                    errors.forEach(e => $('#error-list').append(`<li>${e}</li>`));
-                    $('#form-errors').removeClass('d-none');
-                    $('html, body').animate({ scrollTop: $('#form-errors').offset().top - 100 }, 200);
+                    showErrors(errors);
                     return;
                 }
 
                 // Submit
+                submitButton.prop('disabled', true);
                 $('#purchase-form').hide();
                 $('#loading-section').show();
 
@@ -466,15 +474,15 @@
                         if (response.status) {
                             window.location.href = response.url;
                         } else {
-                            errors = [response.message || 'Terjadi kesalahan. Silakan coba lagi.'];
-                            errors.forEach(e => $('#error-list').append(`<li>${e}</li>`));
-                            $('#form-errors').removeClass('d-none');
                             $('#purchase-form').show();
+                            submitButton.prop('disabled', false);
+                            showErrors([response.message || 'Terjadi kesalahan. Silakan coba lagi.']);
                         }
                     },
                     error: function(xhr) {
                         $('#loading-section').hide();
                         $('#purchase-form').show();
+                        submitButton.prop('disabled', false);
                         if (xhr.status === 422) {
                             const errs = xhr.responseJSON.errors;
                             const list = [];
@@ -482,13 +490,12 @@
                                 errs[key].forEach(m => list.push(m));
                                 $(`[name="${key}"]`).addClass('is-invalid');
                             }
-                            list.forEach(e => $('#error-list').append(`<li>${e}</li>`));
-                            $('#form-errors').removeClass('d-none');
+                            showErrors(list);
+                        } else if (xhr.status === 401) {
+                            showErrors([xhr.responseJSON?.message || 'Silakan login terlebih dahulu untuk membuat pesanan.']);
                         } else {
-                            $('#error-list').append('<li>Terjadi kesalahan server. Silakan coba lagi.</li>');
-                            $('#form-errors').removeClass('d-none');
+                            showErrors([xhr.responseJSON?.message || 'Terjadi kesalahan server. Silakan coba lagi.']);
                         }
-                        $('html, body').animate({ scrollTop: $('#form-errors').offset().top - 100 }, 200);
                     }
                 });
             });

@@ -38,10 +38,12 @@
                             <p><strong>Jumlah Kain:</strong> {{ $order->jumlah_kain }}</p>
                             <p class="text-uppercase"><strong>Ukuran Baju:</strong> {{ $order->ukuran_baju }}</p>
                             <p><strong>Jenis Pembayaran:</strong>
-                                {{ $order->jenis_pembayaran == 'transfer' ? 'Transfer Bank' : 'COD (Cash On Delivery)' }}
+                                {{ $order->bayar == 'transfer' ? 'Transfer Bank' : 'COD (Cash On Delivery)' }}
                             </p>
-                            @if ($order->jenis_pembayaran == 'transfer')
-                                <p><strong>Bank Tujuan:</strong> {{ strtoupper($order->bank_tujuan) }}</p>
+                            @if ($order->bayar == 'transfer')
+                                <p><strong>Bank Tujuan:</strong> {{ strtoupper($order->toko->bank) }}</p>
+                                <p><strong>No. Rekening:</strong> {{ $order->toko->no_rekening }}</p>
+                                <p><strong>Atas Nama:</strong> {{ $order->toko->atas_nama }}</p>
                             @endif
                             <p><strong>Nama Penerima:</strong> {{ $order->nama_penerima }}</p>
                             <p><strong>Alamat Pengiriman:</strong> {{ $order->alamat_penerima }}</p>
