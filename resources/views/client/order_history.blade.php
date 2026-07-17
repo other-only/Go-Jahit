@@ -8,6 +8,12 @@
     <div class="row">
         <div class="col-12">
 
+            @if ($errors->has('rating') || $errors->has('ulasan'))
+                <div class="alert alert-danger">
+                    {{ $errors->first('rating') ?: $errors->first('ulasan') }}
+                </div>
+            @endif
+
             @if (count($orders) > 0)
                 <!-- Daftar Pesanan -->
                 <div class="card shadow-sm">
@@ -65,6 +71,23 @@
                                                             onclick="confirmCancel('{{ $order->kode_order }}')">
                                                             <i class="bi bi-x-circle"></i>
                                                         </button>
+                                                    @endif
+
+                                                    @if ($order->status == 'selesai')
+                                                        @if ($order->rating)
+                                                            <button type="button" class="btn btn-sm btn-outline-warning"
+                                                                title="Rating: {{ $order->rating->rating }} dari 5 bintang"
+                                                                disabled>
+                                                                <i class="bi bi-star-fill"></i>
+                                                            </button>
+                                                        @else
+                                                            <button type="button" class="btn btn-sm btn-outline-warning"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#ratingModal{{ $order->id }}"
+                                                                title="Beri rating">
+                                                                <i class="bi bi-star"></i>
+                                                            </button>
+                                                        @endif
                                                     @endif
                                                 </div>
                                             </td>
@@ -126,10 +149,82 @@
             </div>
         </div>
     </div>
+
+    @foreach ($orders as $order)
+        @if ($order->status == 'selesai' && !$order->rating)
+            <div class="modal fade" id="ratingModal{{ $order->id }}" tabindex="-1"
+                aria-labelledby="ratingModalLabel{{ $order->id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <form class="modal-content" action="{{ route('client.order.rating.store', $order) }}" method="POST">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="ratingModalLabel{{ $order->id }}">Beri Rating Toko</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="mb-3">Bagaimana pengalaman Anda di <strong>{{ $order->toko->nama_toko }}</strong>?</p>
+                            <div class="mb-3">
+                                <fieldset class="rating-picker" data-rating-picker>
+                                    <legend class="form-label mb-1">Rating</legend>
+                                    <p class="small text-muted mb-2" data-rating-label>Pilih jumlah bintang</p>
+                                    <div class="d-flex gap-1" role="radiogroup" aria-label="Pilih rating">
+                                        @for ($rating = 1; $rating <= 5; $rating++)
+                                            <input class="rating-star-input" type="radio" id="rating{{ $order->id }}-{{ $rating }}"
+                                                name="rating" value="{{ $rating }}" required>
+                                            <label class="rating-star" for="rating{{ $order->id }}-{{ $rating }}"
+                                                data-rating="{{ $rating }}" title="{{ $rating }} bintang">
+                                                <i class="bi bi-star-fill"></i>
+                                                <span class="visually-hidden">{{ $rating }} bintang</span>
+                                            </label>
+                                        @endfor
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="mb-0">
+                                <label for="ulasan{{ $order->id }}" class="form-label">Ulasan <span class="text-muted">(opsional)</span></label>
+                                <textarea class="form-control" id="ulasan{{ $order->id }}" name="ulasan" rows="3" maxlength="1000"
+                                    placeholder="Ceritakan pengalaman Anda"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-warning">Kirim Rating</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @endif
+    @endforeach
 @endsection
 
 @push('scripts')
     <script>
+        document.querySelectorAll('[data-rating-picker]').forEach((picker) => {
+            const stars = [...picker.querySelectorAll('.rating-star')];
+            const inputs = [...picker.querySelectorAll('.rating-star-input')];
+            const label = picker.querySelector('[data-rating-label]');
+
+            const paintStars = (value = 0) => {
+                stars.forEach((star) => {
+                    star.classList.toggle('is-active', Number(star.dataset.rating) <= value);
+                });
+                label.textContent = value ? `${value} dari 5 bintang` : 'Pilih jumlah bintang';
+            };
+
+            picker.addEventListener('mouseover', (event) => {
+                const star = event.target.closest('.rating-star');
+                if (star) paintStars(Number(star.dataset.rating));
+            });
+
+            picker.addEventListener('mouseleave', () => {
+                paintStars(Number(inputs.find((input) => input.checked)?.value || 0));
+            });
+
+            inputs.forEach((input) => {
+                input.addEventListener('change', () => paintStars(Number(input.value)));
+            });
+        });
+
         function confirmCancel(kodeOrder) {
             $('#cancel_kode_order').val(kodeOrder);
             $('#cancelModal').modal('show');
@@ -146,4 +241,41 @@
             });
         });
     </script>
+@endpush
+
+@push('styles')
+    <style>
+        .rating-picker {
+            border: 0;
+            padding: 0;
+        }
+
+        .rating-star-input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .rating-star {
+            color: #ced4da;
+            cursor: pointer;
+            font-size: 2rem;
+            line-height: 1;
+            transition: color .15s ease, transform .15s ease;
+        }
+
+        .rating-star:hover,
+        .rating-star.is-active {
+            color: #ffab00;
+        }
+
+        .rating-star:hover {
+            transform: scale(1.12);
+        }
+
+        .rating-star-input:focus-visible + .rating-star {
+            border-radius: 4px;
+            outline: 3px solid rgba(105, 108, 255, .35);
+            outline-offset: 2px;
+        }
+    </style>
 @endpush

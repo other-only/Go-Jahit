@@ -53,6 +53,16 @@
                         style="height: 200px; object-fit: contain;">
                     <div class="card-body">
                         <p class="card-text">{{ $toko->deskripsi }}</p>
+                        <div class="d-flex align-items-center mb-3" aria-label="Rating toko">
+                            @if ($toko->ratings_count > 0)
+                                <i class="bi bi-star-fill text-warning me-1"></i>
+                                <span class="fw-semibold">{{ number_format($toko->average_rating, 1) }}</span>
+                                <span class="text-muted small ms-1">({{ $toko->ratings_count }} ulasan)</span>
+                            @else
+                                <i class="bi bi-star text-muted me-1"></i>
+                                <span class="text-muted small">Belum ada ulasan</span>
+                            @endif
+                        </div>
                         <div class="store-info mt-3">
                             <div class="d-flex align-items-start mb-2">
                                 <i class="bi bi-geo-alt-fill text-primary me-2 mt-1"></i>

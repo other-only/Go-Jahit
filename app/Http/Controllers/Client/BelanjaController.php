@@ -19,11 +19,13 @@ class BelanjaController extends Controller
         $lng = $request->get('lng');
 
         $query = Toko::has('produks')->has('details')
+            ->withAvg('ratings as average_rating', 'rating')
+            ->withCount('ratings')
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('nama_toko', 'like', "%{$search}%")
-                      ->orWhere('alamat', 'like', "%{$search}%")
-                      ->orWhere('deskripsi', 'like', "%{$search}%");
+                        ->orWhere('alamat', 'like', "%{$search}%")
+                        ->orWhere('deskripsi', 'like', "%{$search}%");
                 });
             });
 
@@ -70,6 +72,7 @@ class BelanjaController extends Controller
              cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
              sin($dLng / 2) * sin($dLng / 2);
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
         return $earthRadius * $c;
     }
 
@@ -78,12 +81,13 @@ class BelanjaController extends Controller
         $produks = $toko->produks;
         $details = $toko->details;
         $user = auth()->user();
+
         return view('client.order', compact('toko', 'produks', 'details', 'user'));
     }
 
     public function orderPost(Request $request, Toko $toko)
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return response()->json([
                 'message' => 'Silakan login terlebih dahulu untuk membuat pesanan.',
             ], 401);
@@ -136,7 +140,7 @@ class BelanjaController extends Controller
 
         try {
             DB::beginTransaction();
-            $kode_booking = 'BK-' . mt_rand(10000000, 99999999);
+            $kode_booking = 'BK-'.mt_rand(10000000, 99999999);
             $order = Order::create([
                 'kode_order' => $kode_booking,
                 'toko_id' => $toko->id,
@@ -155,9 +159,11 @@ class BelanjaController extends Controller
             ]);
             DB::commit();
             $url = route('client.order.success', ['order' => $order]);
+
             return response()->json(['message' => 'Order Berhasil', 'url' => $url, 'status' => true], 200);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
@@ -170,6 +176,7 @@ class BelanjaController extends Controller
     public function orderStatus(Request $request, $order)
     {
         $order = Order::where('kode_order', $order)->first();
+
         return view('client.order_status', compact('order'));
     }
 
@@ -182,7 +189,7 @@ class BelanjaController extends Controller
     {
         $order = Order::where('kode_order', $request->kode_order)->first();
 
-        if (!$order) {
+        if (! $order) {
             return redirect()->route('client.track.order')->with('error', 'Kode booking tidak ditemukan.');
         }
 
@@ -191,7 +198,11 @@ class BelanjaController extends Controller
 
     public function historyOrder(Request $request)
     {
-        $orders = Order::where('pelanggan_id', auth()->user()->id)->orderBy('created_at', 'desc')->paginate(10);
+        $orders = Order::where('pelanggan_id', auth()->user()->id)
+            ->with('rating')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
         return view('client.order_history', compact('orders'));
     }
 
@@ -201,22 +212,26 @@ class BelanjaController extends Controller
             DB::beginTransaction();
             $order = Order::where('kode_order', $request->kode_order)->first();
 
-            if (!$order) {
+            if (! $order) {
                 DB::rollBack();
+
                 return back()->with('error', 'Order tidak ditemukan.');
             }
 
             if (in_array($order->status, ['selesai', 'batal'])) {
                 DB::rollBack();
-                return back()->with('error', 'Order dengan status ' . $order->getStatusOrder() . ' tidak dapat dibatalkan.');
+
+                return back()->with('error', 'Order dengan status '.$order->getStatusOrder().' tidak dapat dibatalkan.');
             }
 
             $order->status = 'batal';
             $order->save();
             DB::commit();
+
             return back()->with('success', 'Order Berhasil Dibatalkan');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return back()->with('error', $e->getMessage());
         }
     }
@@ -225,20 +240,21 @@ class BelanjaController extends Controller
     {
         $request->validate(['alamat' => 'required|string|max:500']);
 
-        $url = 'https://nominatim.openstreetmap.org/search?q=' . urlencode($request->alamat) . '&format=json&limit=1&countrycodes=id';
+        $url = 'https://nominatim.openstreetmap.org/search?q='.urlencode($request->alamat).'&format=json&limit=1&countrycodes=id';
 
         $context = stream_context_create([
             'http' => [
-                'header' => "User-Agent: GoJahit/1.0\r\n"
-            ]
+                'header' => "User-Agent: GoJahit/1.0\r\n",
+            ],
         ]);
 
         $response = file_get_contents($url, false, $context);
         $data = json_decode($response, true);
 
-        if (!empty($data[0])) {
+        if (! empty($data[0])) {
             $lat = $data[0]['lat'];
             $lng = $data[0]['lon'];
+
             return redirect()->route('client.belanja', ['lat' => $lat, 'lng' => $lng]);
         }
 

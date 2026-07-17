@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class Toko extends Model
 {
     use HasFactory;
+
     protected $guarded = [];
 
     protected $casts = [
@@ -18,7 +19,7 @@ class Toko extends Model
 
     public function getLogo()
     {
-        return Storage::url('toko/' . $this->logo);
+        return Storage::url('toko/'.$this->logo);
     }
 
     public function produks()
@@ -36,4 +37,8 @@ class Toko extends Model
         return $this->hasMany(ProductDetail::class, 'toko_id');
     }
 
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
 }

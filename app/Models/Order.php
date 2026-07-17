@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class Order extends Model
 {
     use HasFactory;
+
     protected $guarded = [];
 
     public function toko()
@@ -31,28 +32,33 @@ class Order extends Model
         return $this->hasOne(Conversation::class)->where('type', 'order');
     }
 
+    public function rating()
+    {
+        return $this->hasOne(Rating::class);
+    }
+
     public function getBuktiBayar()
     {
-        return Storage::url('bukti_pembayaran/' . $this->bukti_pembayaran);
+        return Storage::url('bukti_pembayaran/'.$this->bukti_pembayaran);
     }
 
     public function getStatusOrder()
     {
         switch ($this->status) {
             case 'dalam-proses':
-                $status = "Dalam Proses";
+                $status = 'Dalam Proses';
                 break;
             case 'sudah-dikirim':
-                $status = "Sudah Dikirim";
+                $status = 'Sudah Dikirim';
                 break;
             case 'selesai':
-                $status = "Selesai";
+                $status = 'Selesai';
                 break;
             case 'batal':
-                $status = "Dibatalkan";
+                $status = 'Dibatalkan';
                 break;
             default:
-                $status = "Menunggu Konfirmasi";
+                $status = 'Menunggu Konfirmasi';
                 break;
         }
 
@@ -63,19 +69,19 @@ class Order extends Model
     {
         switch ($this->status) {
             case 'dalam-proses':
-                $color = "warning";
+                $color = 'warning';
                 break;
             case 'sudah-dikirim':
-                $color = "info";
+                $color = 'info';
                 break;
             case 'selesai':
-                $color = "success";
+                $color = 'success';
                 break;
             case 'batal':
-                $color = "danger";
+                $color = 'danger';
                 break;
             default:
-                $color = "primary";
+                $color = 'primary';
                 break;
         }
 

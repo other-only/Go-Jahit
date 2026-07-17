@@ -8,13 +8,14 @@ use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\Admin\TokoController;
 use App\Http\Controllers\Client\BelanjaController;
 use App\Http\Controllers\Client\ChatController as ClientChatController;
+use App\Http\Controllers\Client\RatingController as ClientRatingController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\Penjahit\DashboardController as PenjahitDashboardController;
-use App\Http\Controllers\Penjahit\TokoController as PenjahitTokoController;
-use App\Http\Controllers\Penjahit\ProdukController as PenjahitProdukController;
-use App\Http\Controllers\Penjahit\DetailController as PenjahitDetailController;
 use App\Http\Controllers\Penjahit\ChatController as PenjahitChatController;
+use App\Http\Controllers\Penjahit\DashboardController as PenjahitDashboardController;
+use App\Http\Controllers\Penjahit\DetailController as PenjahitDetailController;
 use App\Http\Controllers\Penjahit\PesananController as PenjahitPesananController;
+use App\Http\Controllers\Penjahit\ProdukController as PenjahitProdukController;
+use App\Http\Controllers\Penjahit\TokoController as PenjahitTokoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -42,6 +43,7 @@ Route::group(['prefix' => 'client'], function () {
 
     // Client chat
     Route::group(['middleware' => ['auth', 'role:pelanggan']], function () {
+        Route::post('order/{order}/rating', [ClientRatingController::class, 'store'])->name('client.order.rating.store');
         Route::get('chat', [ClientChatController::class, 'index'])->name('client.chat.index');
         Route::get('chat/{conversation}', [ClientChatController::class, 'show'])->name('client.chat.show');
         Route::get('chat/{conversation}/messages', [ClientChatController::class, 'fetchMessages'])->name('client.chat.messages');

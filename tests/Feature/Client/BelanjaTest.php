@@ -5,6 +5,7 @@ namespace Tests\Feature\Client;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductDetail;
+use App\Models\Rating;
 use App\Models\Toko;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -67,7 +68,7 @@ class BelanjaTest extends TestCase
         $this->get($response->json('url'))->assertStatus(200);
     }
 
-    public function test_order_generates_booking_code_starting_with_BK()
+    public function test_order_generates_booking_code_starting_with_bk()
     {
         $pelanggan = User::factory()->create();
         $pelanggan->assignRole('pelanggan');
@@ -269,7 +270,7 @@ class BelanjaTest extends TestCase
         $response->assertJson(['status' => true]);
         $order = Order::first();
         $this->assertNotNull($order->bukti_pembayaran);
-        Storage::disk('public')->assertExists('bukti_pembayaran/' . $order->bukti_pembayaran);
+        Storage::disk('public')->assertExists('bukti_pembayaran/'.$order->bukti_pembayaran);
     }
 
     public function test_guest_order_post_returns_login_message()
@@ -352,5 +353,110 @@ class BelanjaTest extends TestCase
             'id' => $order->id,
             'status' => 'selesai',
         ]);
+    }
+
+    public function test_customer_can_rate_own_completed_order()
+    {
+        $pelanggan = User::factory()->create();
+        $pelanggan->assignRole('pelanggan');
+        $this->actingAs($pelanggan);
+
+        $penjahit = User::factory()->create();
+        $toko = Toko::factory()->create(['penjahit_id' => $penjahit->id]);
+        $product = Product::factory()->create(['toko_id' => $toko->id]);
+        $detail = ProductDetail::factory()->create(['toko_id' => $toko->id]);
+        $order = Order::factory()->create([
+            'pelanggan_id' => $pelanggan->id,
+            'toko_id' => $toko->id,
+            'product_id' => $product->id,
+            'product_detail_id' => $detail->id,
+            'status' => 'selesai',
+        ]);
+
+        $response = $this->post(route('client.order.rating.store', $order), [
+            'rating' => 5,
+            'ulasan' => 'Jahitannya rapi dan sesuai pesanan.',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('ratings', [
+            'order_id' => $order->id,
+            'toko_id' => $toko->id,
+            'pelanggan_id' => $pelanggan->id,
+            'rating' => 5,
+        ]);
+    }
+
+    public function test_customer_cannot_rate_order_that_is_not_completed()
+    {
+        $pelanggan = User::factory()->create();
+        $pelanggan->assignRole('pelanggan');
+        $this->actingAs($pelanggan);
+        $order = Order::factory()->create(['pelanggan_id' => $pelanggan->id, 'status' => 'dalam-proses']);
+
+        $this->post(route('client.order.rating.store', $order), ['rating' => 5])
+            ->assertForbidden();
+
+        $this->assertDatabaseCount('ratings', 0);
+    }
+
+    public function test_customer_cannot_rate_another_customers_order()
+    {
+        $pelanggan = User::factory()->create();
+        $pelanggan->assignRole('pelanggan');
+        $this->actingAs($pelanggan);
+        $order = Order::factory()->create(['status' => 'selesai']);
+
+        $this->post(route('client.order.rating.store', $order), ['rating' => 5])
+            ->assertForbidden();
+
+        $this->assertDatabaseCount('ratings', 0);
+    }
+
+    public function test_customer_cannot_rate_an_order_twice()
+    {
+        $pelanggan = User::factory()->create();
+        $pelanggan->assignRole('pelanggan');
+        $this->actingAs($pelanggan);
+        $order = Order::factory()->create(['pelanggan_id' => $pelanggan->id, 'status' => 'selesai']);
+        Rating::create([
+            'order_id' => $order->id,
+            'toko_id' => $order->toko_id,
+            'pelanggan_id' => $pelanggan->id,
+            'rating' => 4,
+        ]);
+
+        $this->from(route('client.history.order'))
+            ->post(route('client.order.rating.store', $order), ['rating' => 5])
+            ->assertRedirect(route('client.history.order'))
+            ->assertSessionHasErrors('rating');
+
+        $this->assertDatabaseCount('ratings', 1);
+    }
+
+    public function test_shop_list_displays_average_rating_and_number_of_reviews()
+    {
+        $toko = Toko::factory()->create();
+        Product::factory()->create(['toko_id' => $toko->id]);
+        ProductDetail::factory()->create(['toko_id' => $toko->id]);
+        $firstOrder = Order::factory()->create(['toko_id' => $toko->id]);
+        $secondOrder = Order::factory()->create(['toko_id' => $toko->id]);
+        Rating::create([
+            'order_id' => $firstOrder->id,
+            'toko_id' => $toko->id,
+            'pelanggan_id' => $firstOrder->pelanggan_id,
+            'rating' => 4,
+        ]);
+        Rating::create([
+            'order_id' => $secondOrder->id,
+            'toko_id' => $toko->id,
+            'pelanggan_id' => $secondOrder->pelanggan_id,
+            'rating' => 5,
+        ]);
+
+        $this->get(route('client.belanja'))
+            ->assertOk()
+            ->assertSee('4.5')
+            ->assertSee('(2 ulasan)');
     }
 }
